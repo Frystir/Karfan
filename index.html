@@ -1,0 +1,2457 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bónusdeild karla — Giskleikur</title>
+<meta name="description" content="Spáðu fyrir úrslitum í Bónusdeild karla og keppdu við vini þína í eigin hóp.">
+</head>
+<body>
+<div id="root"></div>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+  #root {
+    --bg: #101318;
+    --surface: #1A1F27;
+    --surface-2: #21272F;
+    --line: #2C333D;
+    --rim: #FF6A3D;
+    --amber: #D9A15B;
+    --teal: #46A895;
+    --text: #F1EEE6;
+    --text-muted: #8A93A3;
+    --danger: #E5484D;
+
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100%;
+    padding: 24px 14px 40px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+  }
+
+  #root * { box-sizing: border-box; }
+
+  .wrap { width: 100%; max-width: 620px; }
+
+  .court-bg {
+    position: relative;
+    padding: 24px 18px 20px;
+    border-radius: 18px;
+    background: radial-gradient(circle at 85% -10%, rgba(255,106,61,0.16), transparent 55%), var(--surface);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .net-lines {
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    opacity: 0.12;
+    background-image:
+      repeating-linear-gradient(45deg, var(--amber) 0 1px, transparent 1px 14px),
+      repeating-linear-gradient(-45deg, var(--amber) 0 1px, transparent 1px 14px);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .eyebrow {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--rim);
+    margin: 0 0 6px;
+  }
+
+  h1 {
+    font-family: 'Anton', 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.05;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+  }
+
+  .sub { font-size: 14px; line-height: 1.55; color: var(--text-muted); margin: 0 0 18px; max-width: 52ch; }
+  .note {
+    font-size: 11.5px; line-height: 1.5; color: var(--text-muted);
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 9px 11px; margin: 0 0 16px;
+  }
+
+  .tabs {
+    display: flex; gap: 6px;
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 12px; padding: 4px; margin-bottom: 8px;
+  }
+  .tabs.last { margin-bottom: 18px; }
+
+  .tab-btn {
+    flex: 1;
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    padding: 10px 6px;
+    border-radius: 9px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .tab-btn.active { background: var(--rim); color: #1A0D07; }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+  .tab-btn:focus-visible { outline: 2px solid var(--rim); outline-offset: 2px; }
+
+  .round-head {
+    font-family: 'Anton', sans-serif;
+    font-size: 14px;
+    color: var(--amber);
+    margin: 0 0 6px;
+  }
+
+  .round { margin-bottom: 16px; }
+  .round-sub-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: 'Anton', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--amber);
+    margin: 0 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .round-score {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--teal);
+    white-space: nowrap;
+  }
+  .round-score.round-score-pending { color: var(--text-muted); }
+
+  .game-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .team-pick {
+    flex: 1; font-size: 13.5px; font-weight: 600; text-align: center;
+    padding: 9px 6px; border-radius: 9px; border: 1px solid var(--line);
+    background: var(--surface-2); color: var(--text); cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, opacity 0.12s ease;
+  }
+  .team-pick:hover { border-color: var(--text-muted); }
+  .team-pick.selected { background: var(--rim); border-color: var(--rim); color: #1A0D07; }
+  .team-pick.actual-selected { background: var(--teal); border-color: var(--teal); color: #06231F; }
+  .team-pick.dimmed { opacity: 0.5; }
+  .team-pick:focus-visible { outline: 2px solid var(--rim); outline-offset: 2px; }
+  .team-pick:disabled, select:disabled, input:disabled { opacity: 0.45; cursor: not-allowed; }
+  .vs { font-family: 'Oswald', sans-serif; font-size: 10.5px; color: var(--text-muted); width: 20px; text-align: center; flex-shrink: 0; }
+
+  .round-lock-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    margin: 4px 0 10px; font-size: 12px;
+  }
+  .round-lock-label { color: var(--text-muted); white-space: nowrap; }
+  .round-start-input {
+    font-size: 12.5px; font-family: 'Inter', sans-serif;
+    background: var(--surface); color: var(--text); border: 1px solid var(--line);
+    border-radius: 8px; padding: 5px 7px;
+  }
+  .round-start-input:focus-visible { outline: 2px solid var(--rim); outline-offset: 1px; }
+  .lock-badge {
+    font-family: 'Oswald', sans-serif; font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.03em; color: var(--text-muted);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px;
+  }
+  .lock-badge.locked { color: #2A0B0B; background: var(--danger); border-color: var(--danger); }
+  .lock-badge.pending { color: var(--text-muted); }
+  .lock-explainer { font-size: 11.5px; line-height: 1.5; color: var(--text-muted); margin: 12px 0 0; }
+
+  .pool-banner {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    flex-wrap: wrap; font-size: 12px; line-height: 1.4; color: var(--text-muted);
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 9px 11px; margin: 0 0 16px;
+  }
+  .pool-banner strong { color: var(--text); }
+  .btn-link {
+    font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.03em; text-transform: uppercase; white-space: nowrap;
+    background: transparent; color: var(--text); border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 10px; cursor: pointer; transition: border-color 0.12s ease, color 0.12s ease;
+  }
+  .btn-link:hover { border-color: var(--rim); color: var(--rim); }
+  .btn-link:focus-visible { outline: 2px solid var(--rim); outline-offset: 2px; }
+  .pool-note { font-size: 11.5px; color: var(--text-muted); margin: 0 0 12px; }
+
+  .admin-players-panel { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line); }
+  .admin-players-group-title {
+    font-family: 'Oswald', sans-serif; font-size: 11.5px; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--amber); margin: 14px 0 6px;
+  }
+  .admin-players-group-title:first-child { margin-top: 0; }
+  .admin-player-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 10px; margin-bottom: 6px;
+  }
+  .admin-player-name { font-size: 13.5px; font-weight: 600; }
+  .admin-player-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(6, 8, 10, 0.72);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; z-index: 999;
+  }
+  .modal-box {
+    width: 100%; max-width: 340px; background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 16px; padding: 20px;
+  }
+  .modal-title { font-family: 'Anton', sans-serif; font-size: 17px; color: var(--text); margin: 0 0 6px; }
+  .modal-sub { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin: 0 0 14px; }
+  .modal-input {
+    width: 100%; box-sizing: border-box; font-size: 14px; font-family: 'Inter', sans-serif;
+    background: var(--surface); color: var(--text); border: 1px solid var(--line);
+    border-radius: 9px; padding: 10px 12px; margin-bottom: 8px;
+  }
+  .modal-input:focus-visible { outline: 2px solid var(--rim); outline-offset: 1px; }
+  .modal-error { font-size: 12px; color: var(--danger); margin: 0 0 10px; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+  .modal-actions .btn { padding: 8px 14px; font-size: 12.5px; }
+
+  .admin-only-note { font-size: 12px; color: var(--text-muted); margin: 0 0 10px; }
+
+  .game-row.game-correct { box-shadow: inset 3px 0 0 var(--teal); border-radius: 9px; padding-left: 6px; }
+  .game-row.game-wrong { box-shadow: inset 3px 0 0 var(--danger); border-radius: 9px; padding-left: 6px; }
+
+  .results-mode-banner {
+    font-size: 11.5px; line-height: 1.5; color: #06231F;
+    background: var(--teal); border-radius: 10px; padding: 9px 11px; margin-bottom: 12px;
+  }
+
+  .scoreboard-total {
+    display: flex; align-items: baseline; justify-content: space-between;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px 18px; margin-bottom: 16px;
+  }
+  .scoreboard-total-label {
+    font-family: 'Oswald', sans-serif; font-size: 12.5px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--rim);
+  }
+  .scoreboard-total-value { font-family: 'Anton', sans-serif; font-size: 34px; color: var(--text); }
+
+  .scoreboard-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+  .scoreboard-row {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 11px 13px;
+  }
+  .scoreboard-row-main { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .scoreboard-row-name { font-size: 14px; font-weight: 600; }
+  .scoreboard-row-value { font-family: 'Anton', sans-serif; font-size: 17px; color: var(--teal); white-space: nowrap; }
+  .scoreboard-row-detail { font-size: 12px; color: var(--text-muted); margin: 4px 0 0; }
+  .scoreboard-note { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin: 14px 0 0; }
+
+  .bonus-picker {
+    margin: 6px 0 14px;
+    padding: 10px 11px;
+    background: var(--surface-2);
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+  }
+  .bonus-picker-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .bonus-picker-label {
+    font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase; color: var(--amber); white-space: nowrap;
+  }
+  .bonus-select {
+    flex: 1; min-width: 140px; font-size: 12.5px; font-family: 'Inter', sans-serif;
+    background: var(--surface); color: var(--text); border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 8px;
+  }
+  .bonus-select:focus-visible { outline: 2px solid var(--rim); outline-offset: 1px; }
+  .bonus-score-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .bonus-score-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+  .bonus-score-input {
+    width: 70px; font-size: 13px; font-family: 'Inter', sans-serif;
+    background: var(--surface); color: var(--text); border: 1px solid var(--line);
+    border-radius: 8px; padding: 5px 7px;
+  }
+  .bonus-score-input:focus-visible { outline: 2px solid var(--rim); outline-offset: 1px; }
+  .bonus-guess-input {
+    width: 70px; font-size: 13px; font-family: 'Inter', sans-serif;
+    background: var(--surface); color: var(--text); border: 1px solid var(--line);
+    border-radius: 8px; padding: 5px 7px;
+  }
+  .bonus-guess-input:focus-visible { outline: 2px solid var(--rim); outline-offset: 1px; }
+
+  .league-count {
+    font-family: 'Oswald', sans-serif; font-size: 11.5px; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--text-muted); margin: 0 0 12px;
+  }
+  .league-table { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+  .league-head-row {
+    display: flex; align-items: center; gap: 12px; padding: 0 12px 6px;
+    font-family: 'Oswald', sans-serif; font-size: 10.5px; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--text-muted); border-bottom: 1px dashed var(--line); margin-bottom: 4px;
+  }
+  .league-head-rank { width: 34px; min-width: 34px; text-align: center; }
+  .league-head-team { flex: 1; }
+  .league-head-stat { width: 40px; text-align: center; }
+  .league-head-points { width: 34px; text-align: center; }
+  .league-row {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px;
+  }
+  .league-row:nth-child(1) .rank { color: #F5C55A; border-color: #F5C55A; }
+  .league-row:nth-child(2) .rank { color: #C9CBCF; border-color: #C9CBCF; }
+  .league-row:nth-child(3) .rank { color: #D08A56; border-color: #D08A56; }
+  .league-row:nth-last-child(1) .rank, .league-row:nth-last-child(2) .rank { color: var(--danger); border-color: var(--danger); }
+  .league-team-name { font-size: 14px; }
+  .league-stat { width: 40px; text-align: center; font-size: 13px; color: var(--text-muted); }
+  .league-points {
+    width: 34px; text-align: center; font-family: 'Anton', sans-serif; font-size: 16px; color: var(--text);
+  }
+  .bonus-badge {
+    font-family: 'Oswald', sans-serif; font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.03em; text-transform: uppercase; color: var(--text-muted);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px;
+  }
+  .bonus-badge.earned { color: #06231F; background: var(--amber); border-color: var(--amber); }
+
+  .score-input-group { display: flex; align-items: center; gap: 5px; flex: 1; }
+  .score-input-group .team-pick { flex: 1; }
+  .game-score-input {
+    width: 46px; flex-shrink: 0; font-size: 12px; font-family: 'Inter', sans-serif; text-align: center;
+    background: var(--surface); color: var(--text); border: 1px solid var(--line);
+    border-radius: 7px; padding: 8px 3px;
+  }
+  .game-score-input:focus-visible { outline: 2px solid var(--rim); outline-offset: 1px; }
+
+  .progress-line {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: 'Oswald', sans-serif; font-size: 11.5px; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;
+  }
+  .progress-bar { width: 100%; height: 5px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--rim); border-radius: 999px; transition: width 0.2s ease; }
+
+  .list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .row {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px;
+    padding: 10px 12px; transition: border-color 0.15s ease;
+  }
+  .row.moved { border-color: var(--rim); }
+  .row.correct { border-color: var(--teal); background: rgba(70,168,149,0.12); }
+  .row.correct .rank { color: var(--teal); border-color: var(--teal); }
+
+  .rank {
+    font-family: 'Anton', 'Oswald', sans-serif; font-size: 20px;
+    width: 34px; height: 34px; min-width: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 30% 30%, #2A3138, #171B21);
+    border: 1px solid var(--line); color: var(--amber);
+  }
+  .row:nth-child(1) .rank { color: #F5C55A; border-color: #F5C55A; }
+  .row:nth-child(2) .rank { color: #C9CBCF; border-color: #C9CBCF; }
+  .row:nth-child(3) .rank { color: #D08A56; border-color: #D08A56; }
+  .row:nth-last-child(1) .rank, .row:nth-last-child(2) .rank { color: var(--danger); border-color: var(--danger); }
+
+  .team-name { flex: 1; font-size: 15.5px; font-weight: 600; letter-spacing: 0.01em; }
+  .btn-group { display: flex; gap: 4px; }
+  .arrow-btn {
+    width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--text); font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s ease, border-color 0.12s ease;
+  }
+  .arrow-btn:hover:not(:disabled) { background: var(--rim); border-color: var(--rim); color: #14100E; }
+  .arrow-btn:disabled { opacity: 0.28; cursor: default; }
+  .arrow-btn:focus-visible { outline: 2px solid var(--rim); outline-offset: 2px; }
+
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; padding-top: 14px; border-top: 1px dashed var(--line); }
+  .btn {
+    font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em;
+    text-transform: uppercase; padding: 11px 18px; border-radius: 10px; border: 1px solid transparent; cursor: pointer;
+    transition: transform 0.1s ease, opacity 0.15s ease;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:focus-visible { outline: 2px solid var(--rim); outline-offset: 2px; }
+  .btn-primary { background: var(--rim); color: #1A0D07; }
+  .btn-primary:hover { opacity: 0.92; }
+  .btn-secondary { background: transparent; color: var(--text-muted); border-color: var(--line); }
+  .btn-secondary:hover { color: var(--text); border-color: var(--text-muted); }
+
+  .status-line { margin-top: 14px; font-size: 12.5px; color: var(--text-muted); min-height: 16px; }
+  .loading { color: var(--text-muted); font-size: 13px; padding: 20px 0; }
+
+  .score-panel { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line); }
+  .score-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
+  .score-title { font-family: 'Oswald', sans-serif; font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); }
+  .score-big { font-family: 'Anton', sans-serif; font-size: 22px; color: var(--text); }
+  .score-note { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin: 4px 0 14px; }
+
+  .actual-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .actual-row {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px;
+  }
+  .actual-row .rank { width: 26px; height: 26px; min-width: 26px; font-size: 15px; }
+  .actual-row .team-name { font-size: 13.5px; }
+  .actual-row .arrow-btn { width: 26px; height: 26px; font-size: 12px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tab-btn, .row, .arrow-btn, .btn, .team-pick, .progress-fill { transition: none; }
+  }
+
+  .config-warning {
+    max-width: 620px; margin: 0 auto 16px; padding: 12px 14px;
+    background: #3a1f14; border: 1px solid var(--rim); border-radius: 10px;
+    color: var(--text); font-size: 13px; line-height: 1.5;
+  }
+  .config-warning code { background: #1A0D07; padding: 1px 5px; border-radius: 4px; }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ============================================================
+// Supabase stillingar — settu inn þínar upplýsingar hér
+// (Project Settings → API í Supabase stjórnborðinu)
+// ============================================================
+const SUPABASE_URL = "https://svvcicbazdlxikxhtfkx.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2dmNpY2JhemRseGlreGh0Zmt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NzcxMTEsImV4cCI6MjEwMDQ1MzExMX0.dla95kLk3g30qX6VQI7MzgqL9lTw_-uAehtqU2AOWbs";
+
+// ------------------------------------------------------------
+// window.storage-líking ofan á Supabase, svo restin af leiknum
+// þurfi engu að breyta. "shared=false" er vistað staðbundið í
+// vafranum (localStorage), "shared=true" fer í Supabase-töfluna
+// "kv_store" og er þar með sýnilegt öllum sem opna síðuna.
+// ------------------------------------------------------------
+(function setupStorageShim() {
+  const LOCAL_PREFIX = "bdgg_";
+  const isConfigured = SUPABASE_URL.indexOf("YOUR-PROJECT-REF") === -1 && SUPABASE_ANON_KEY.indexOf("YOUR-ANON-PUBLIC-KEY") === -1;
+
+  let supabaseClient = null;
+  if (isConfigured && window.supabase && window.supabase.createClient) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    window.__supabaseClient = supabaseClient;
+  } else {
+    document.addEventListener("DOMContentLoaded", () => {
+      const warn = document.createElement("div");
+      warn.className = "config-warning";
+      warn.innerHTML = "⚠️ Supabase er ekki stillt. Settu <code>SUPABASE_URL</code> og <code>SUPABASE_ANON_KEY</code> efst í skránni (sjá leiðbeiningar í athugasemdum) svo hópa- og leiðtogatöflueiginleikar virki. Einkaspá vistast áfram staðbundið í vafranum.";
+      document.body.insertBefore(warn, document.body.firstChild);
+    });
+  }
+
+  window.storage = {
+    async get(key, shared) {
+      if (!shared || !supabaseClient) {
+        const v = localStorage.getItem(LOCAL_PREFIX + key);
+        if (v === null) throw new Error("key not found: " + key);
+        return { key, value: v, shared: !!shared };
+      }
+      const { data, error } = await supabaseClient
+        .from("kv_store").select("value").eq("key", key).maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("key not found: " + key);
+      return { key, value: data.value, shared: true };
+    },
+    async set(key, value, shared) {
+      if (!shared || !supabaseClient) {
+        localStorage.setItem(LOCAL_PREFIX + key, value);
+        return { key, value, shared: !!shared };
+      }
+      const { error } = await supabaseClient
+        .from("kv_store")
+        .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
+      if (error) throw error;
+      return { key, value, shared: true };
+    },
+    async delete(key, shared) {
+      if (!shared || !supabaseClient) {
+        localStorage.removeItem(LOCAL_PREFIX + key);
+        return { key, deleted: true, shared: !!shared };
+      }
+      const { error } = await supabaseClient.from("kv_store").delete().eq("key", key);
+      if (error) throw error;
+      return { key, deleted: true, shared: true };
+    },
+    async list(prefix, shared) {
+      if (!shared || !supabaseClient) {
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.indexOf(LOCAL_PREFIX) === 0) {
+            const stripped = k.slice(LOCAL_PREFIX.length);
+            if (!prefix || stripped.indexOf(prefix) === 0) keys.push(stripped);
+          }
+        }
+        return { keys, prefix, shared: !!shared };
+      }
+      let query = supabaseClient.from("kv_store").select("key");
+      if (prefix) query = query.like("key", prefix + "%");
+      const { data, error } = await query;
+      if (error) throw error;
+      return { keys: (data || []).map(r => r.key), prefix, shared: true };
+    }
+  };
+})();
+
+// ------------------------------------------------------------
+// Supabase Auth: einfalt tölvupóst-innskráningarhlið (segulhlekkur/
+// magic link, ekkert lykilorð). Leikurinn birtist ekki fyrr en
+// notandi er skráður inn. Ef Supabase er ekki stillt (sjá að ofan)
+// er hliðið sleppt og leikurinn keyrir í staðbundnum ham.
+// ------------------------------------------------------------
+(function setupAuthGate() {
+  let authListenerAttached = false;
+
+  function renderSignInScreen(rootEl) {
+    rootEl.innerHTML =
+      '<div class="wrap"><div class="court-bg">' +
+      '<p class="eyebrow">Innskráning</p>' +
+      '<h1>Bónusdeild giskleikur</h1>' +
+      '<p class="sub">Sláðu inn netfangið þitt til að fá innskráningarlink í tölvupósti. Ekkert lykilorð þarf.</p>' +
+      '<div style="display:flex; gap:8px; margin-bottom:12px;">' +
+      '<input type="email" id="auth-email-input" placeholder="netfang@example.com" ' +
+      'style="flex:1; min-width:0; font-size:14px; font-family:\'Inter\',sans-serif; background:var(--surface-2); color:var(--text); border:1px solid var(--line); border-radius:9px; padding:10px 12px;" />' +
+      '<button id="auth-send-btn" class="btn-link" type="button" style="white-space:nowrap;">Senda link</button>' +
+      '</div>' +
+      '<p id="auth-status" class="pool-note"></p>' +
+      '</div></div>';
+
+    const input = document.getElementById("auth-email-input");
+    const btn = document.getElementById("auth-send-btn");
+    const status = document.getElementById("auth-status");
+    if (input) input.focus();
+
+    const send = async () => {
+      const email = input ? input.value.trim() : "";
+      if (!email || email.indexOf("@") === -1) {
+        if (status) status.textContent = "Sláðu inn gilt netfang.";
+        return;
+      }
+      if (status) status.textContent = "Sendi link\u2026";
+      if (btn) btn.disabled = true;
+      try {
+        const { error } = await window.__supabaseClient.auth.signInWithOtp({
+          email: email,
+          options: { emailRedirectTo: window.location.href }
+        });
+        if (error) throw error;
+        if (status) status.textContent = "Athugaðu tölvupóstinn (" + email + ") og smelltu á innskráningarlinkinn til að halda áfram.";
+      } catch (e) {
+        if (status) status.textContent = "Eitthvað fór úrskeiðis: " + (e && e.message ? e.message : "reyndu aftur.");
+        if (btn) btn.disabled = false;
+      }
+    };
+    if (btn) btn.addEventListener("click", send);
+    if (input) input.addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
+  }
+
+  function renderSignedInBadge(user) {
+    let badge = document.getElementById("auth-signed-in-badge");
+    if (!badge) {
+      badge = document.createElement("div");
+      badge.id = "auth-signed-in-badge";
+      badge.style.cssText = "position:fixed; top:8px; right:8px; z-index:500; display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:5px 10px 5px 12px; font-size:11px; color:var(--text-muted); font-family:'Inter',sans-serif; max-width:calc(100vw - 16px);";
+      document.body.appendChild(badge);
+    }
+    const email = user && user.email ? user.email : "";
+    badge.innerHTML =
+      '<span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:180px;">' + email + '</span>' +
+      '<button id="auth-signout-btn" style="font-family:\'Oswald\',sans-serif; font-size:10.5px; font-weight:600; letter-spacing:0.03em; text-transform:uppercase; background:transparent; color:var(--rim); border:1px solid var(--line); border-radius:999px; padding:3px 9px; cursor:pointer; flex-shrink:0;">Skrá út</button>';
+    const signOutBtn = document.getElementById("auth-signout-btn");
+    if (signOutBtn) {
+      signOutBtn.addEventListener("click", async () => {
+        await window.__supabaseClient.auth.signOut();
+        window.location.reload();
+      });
+    }
+  }
+
+  // Athugar hvort innskráður notandi er í "admins" töflunni í Supabase.
+  window.__checkIsAdmin = async function () {
+    if (!window.__supabaseClient) return false;
+    const { data: sessionData } = await window.__supabaseClient.auth.getSession();
+    const user = sessionData && sessionData.session ? sessionData.session.user : null;
+    if (!user) return false;
+    const { data, error } = await window.__supabaseClient
+      .from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
+    if (error) return false;
+    return !!data;
+  };
+
+  // Skilar true ef notandi er þegar skráður inn (og birtir útskráningar-merki).
+  // Ef ekki, birtir innskráningarform í rootEl og skilar false; þegar
+  // innskráning tekst kallar hún sjálfkrafa á window.__gameInit() aftur.
+  window.__ensureSignedIn = async function (rootEl) {
+    if (!window.__supabaseClient) return true; // Supabase ekki stillt - staðbundinn hamur
+
+    if (!authListenerAttached) {
+      authListenerAttached = true;
+      window.__supabaseClient.auth.onAuthStateChange((event) => {
+        if (event === "SIGNED_IN" && window.__gameInit) window.__gameInit();
+      });
+    }
+
+    const { data } = await window.__supabaseClient.auth.getSession();
+    const session = data && data.session;
+    if (session && session.user) {
+      renderSignedInBadge(session.user);
+      return true;
+    }
+    renderSignInScreen(rootEl);
+    return false;
+  };
+})();
+</script>
+
+<script>
+(function () {
+  const TEAMS = ["Álftanes", "Tindastóll", "Grindavík", "Stjarnan", "KR", "ÍR", "Valur", "Njarðvík", "Keflavík", "Sindri", "Höttur", "Ármann"];
+  const STORAGE_KEY = "bonusdeild-karla-2026-27-giskleikur"; // eldri, staðbundin lykill (einkaham + varasjóður)
+  const GLOBAL_KEY = "bonusdeild-karla-2026-27-urslit"; // deilt öllum: raunveruleg úrslit, stig, dagsetningar, raunstaða
+  const MEMBERSHIP_KEY = "bonusdeild-karla-2026-27-hopur-skraning"; // staðbundið: hvaða hóp þessi vafri er skráður í
+  const IDENTITY_KEY = "bonusdeild-karla-2026-27-notandi"; // staðbundið: innskráningin þín (nafn) - óháð hópi, breytist ekki þótt þú skiptir um hóp
+  const LEAGUE_PREFIX = "bonusdeild-hopur-"; // + kóði + "-leikmadur-" + auðkenni leikmanns
+  function playerStorageKey(code, slug) { return LEAGUE_PREFIX + code + "-leikmadur-" + slug; }
+  function leaguePlayerPrefix(code) { return LEAGUE_PREFIX + code + "-leikmadur-"; }
+  function leagueInfoKey(code) { return LEAGUE_PREFIX + code + "-upplysingar"; }
+
+  const ICELANDIC_MAP = { "á": "a", "é": "e", "í": "i", "ó": "o", "ú": "u", "ý": "y", "þ": "th", "æ": "ae", "ö": "o", "ð": "d" };
+  function slugify(str) {
+    return String(str || "")
+      .toLowerCase()
+      .split("").map(ch => ICELANDIC_MAP[ch] !== undefined ? ICELANDIC_MAP[ch] : ch).join("")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40);
+  }
+  function escapeHtml(str) {
+    return String(str == null ? "" : str).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  const ADMIN_PASSWORD = "kki2027"; // ekki lengur notað til innskráningar - stjórnandaréttindi eru nú í "admins" töflunni í Supabase (sjá supabase_setup.sql)
+  let isAdmin = false;
+  let showAdminModal = false;
+  let adminError = "";
+  const ROUNDS_PER_LEG = 11;
+
+  const root = document.getElementById("root");
+  // activeTab: "leg1" | "leg2" | "phase1" | "phase2" | "score" | "league" | "pool"
+  let activeTab = "leg1";
+
+  // --- hópa- / leikmannakerfi ---
+  let identity = { name: null, slug: null };
+  let league = { code: null, name: null };
+  let showLeagueModal = false;
+  let leagueNameDraft = "";
+  let leagueModalError = "";
+  let showIdentityModal = false;
+  let identityNameDraft = "";
+  let identityModalError = "";
+  let pendingOpenLeagueAfterIdentity = false;
+  let leaderboardState = { code: null, status: "idle", players: [], error: "" };
+
+  // --- stjórnun allra skráðra aðila (admin) ---
+  let allPlayersAdminState = { status: "idle", groups: [], error: "" };
+  let showAdminPlayerModal = false;
+  let adminPlayerModalTarget = null; // { key, code, slug, name, total }
+  let adminPlayerNameDraft = "";
+  let adminPlayerModalError = "";
+
+  // --- stjórnun allra hópa (admin) ---
+  let allGroupsAdminState = { status: "idle", groups: [], error: "" };
+  let showAdminGroupModal = false;
+  let adminGroupModalTarget = null; // { code, name, playerCount }
+  let adminGroupNameDraft = "";
+  let adminGroupModalError = "";
+
+  // --- leikjaspá state ---
+  let picks = {};
+  let picksDirty = false;
+  let results = {};
+  let resultEntryMode = { leg1: false, leg2: false };
+  let bonusPicks = {}; // roundKey ("leg1-r0") -> { gameId, side }  (yfir/jafnt og 100 stig, eða rétta tala)
+  let bonusGuesses = {}; // roundKey -> giskuð tala (heiltala)
+  let secondBonusPicks = {}; // roundKey -> team name (fæst stig í umferðinni)
+  let roundStartTimes = {}; // roundKey -> "YYYY-MM-DDTHH:MM" (fyrsti leikur umferðar)
+  let gameScores = {}; // gameId -> { home: number|null, away: number|null }
+
+  // --- stöðuspá state ---
+  let orders = { phase1: null, phase2: null };
+  let savedOrders = { phase1: null, phase2: null };
+  let actuals = { phase1: null, phase2: null };
+  let showActualEditor = { phase1: false, phase2: false };
+  let flashRow = null;
+
+  // --- aukastig: Íslandsmeistari / bikarmeistari 2027 ---
+  let extraPicks = { champion: null, cup: null }; // eigin val
+  let extraActuals = { champion: null, cup: null }; // raunverulegir meistarar - deilt öllum, stjórnandi skráir
+
+  let statusMsg = "";
+  let allDirty = false;
+
+  // --- Round-robin schedule (circle method) ---
+  function buildSchedule(teams) {
+    const n = teams.length;
+    const arr = teams.slice();
+    const leg1 = [];
+    for (let round = 0; round < n - 1; round++) {
+      const pairs = [];
+      const half = n / 2;
+      for (let i = 0; i < half; i++) {
+        const a = arr[i];
+        const b = arr[n - 1 - i];
+        if (round % 2 === 0) pairs.push({ home: a, away: b });
+        else pairs.push({ home: b, away: a });
+      }
+      leg1.push(pairs);
+      const last = arr[n - 1];
+      for (let i = n - 1; i > 1; i--) arr[i] = arr[i - 1];
+      arr[1] = last;
+    }
+    const leg2 = leg1.map(roundPairs => roundPairs.map(p => ({ home: p.away, away: p.home })));
+    return { leg1, leg2 };
+  }
+  const SCHEDULE = buildSchedule(TEAMS);
+
+  function gameId(leg, roundIdx, gameIdx) { return leg + "-r" + roundIdx + "-g" + gameIdx; }
+
+  function pickedCount(leg) {
+    const rounds = leg === "leg1" ? SCHEDULE.leg1 : SCHEDULE.leg2;
+    let count = 0;
+    rounds.forEach((pairs, rIdx) => pairs.forEach((p, gIdx) => { if (picks[gameId(leg, rIdx, gIdx)]) count++; }));
+    return count;
+  }
+
+  function shuffledStart() {
+    const arr = TEAMS.slice();
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // Almenn, deild öllum: raunveruleg úrslit / stig / dagsetningar / raunstaða (stjórnandi skráir)
+  function applyGlobalPayload(parsed) {
+    if (!parsed) return;
+    if (typeof parsed.results === "object" && parsed.results) results = parsed.results;
+    if (typeof parsed.roundStartTimes === "object" && parsed.roundStartTimes) roundStartTimes = parsed.roundStartTimes;
+    if (typeof parsed.gameScores === "object" && parsed.gameScores) gameScores = parsed.gameScores;
+    if (typeof parsed.extraActuals === "object" && parsed.extraActuals) extraActuals = parsed.extraActuals;
+    ["phase1", "phase2"].forEach(p => {
+      const actualKey = "actual_" + p;
+      if (Array.isArray(parsed[actualKey]) && parsed[actualKey].length === TEAMS.length) actuals[p] = parsed[actualKey];
+    });
+  }
+
+  async function saveGlobal() {
+    const payload = {
+      results, roundStartTimes, gameScores, extraActuals,
+      actual_phase1: actuals.phase1, actual_phase2: actuals.phase2,
+      savedAt: Date.now()
+    };
+    return window.storage.set(GLOBAL_KEY, JSON.stringify(payload), true);
+  }
+
+  // Persónuleg spá (giskanir): eigin einkaspá EÐA spá sem er deilt með hópnum
+  function applyPersonalPayload(parsed) {
+    if (!parsed) return;
+    if (typeof parsed.picks === "object" && parsed.picks) picks = parsed.picks;
+    if (typeof parsed.bonusPicks === "object" && parsed.bonusPicks) bonusPicks = parsed.bonusPicks;
+    if (typeof parsed.bonusGuesses === "object" && parsed.bonusGuesses) bonusGuesses = parsed.bonusGuesses;
+    if (typeof parsed.secondBonusPicks === "object" && parsed.secondBonusPicks) secondBonusPicks = parsed.secondBonusPicks;
+    if (typeof parsed.extraPicks === "object" && parsed.extraPicks) extraPicks = parsed.extraPicks;
+    ["phase1", "phase2"].forEach(p => {
+      if (Array.isArray(parsed[p]) && parsed[p].length === TEAMS.length) {
+        orders[p] = parsed[p];
+        savedOrders[p] = parsed[p].slice();
+      }
+    });
+  }
+
+  async function loadIdentity() {
+    try {
+      const res = await window.storage.get(IDENTITY_KEY, false);
+      if (res && res.value) {
+        const parsed = JSON.parse(res.value);
+        if (parsed && parsed.name) {
+          identity = { name: parsed.name, slug: parsed.slug || slugify(parsed.name) };
+        }
+      }
+    } catch (e) { /* engin innskráning enn */ }
+  }
+
+  async function saveIdentity() {
+    try {
+      await window.storage.set(IDENTITY_KEY, JSON.stringify({ name: identity.name, slug: identity.slug }), false);
+    } catch (e) { /* hunsa */ }
+  }
+
+  async function loadMembership() {
+    try {
+      const res = await window.storage.get(MEMBERSHIP_KEY, false);
+      if (res && res.value) {
+        const parsed = JSON.parse(res.value);
+        if (parsed && parsed.code) {
+          league = { code: parsed.code, name: parsed.name || parsed.code };
+        }
+      }
+    } catch (e) { /* engin hópskráning enn */ }
+  }
+
+  async function saveMembership() {
+    try {
+      await window.storage.set(MEMBERSHIP_KEY, JSON.stringify({ code: league.code, name: league.name }), false);
+    } catch (e) { /* hunsa */ }
+  }
+
+  async function loadAll() {
+    await loadIdentity();
+    await loadMembership();
+
+    // 1) Raunveruleg úrslit o.fl. - deilt öllum
+    let gotGlobal = false;
+    try {
+      const res = await window.storage.get(GLOBAL_KEY, true);
+      if (res && res.value) {
+        applyGlobalPayload(JSON.parse(res.value));
+        gotGlobal = true;
+      }
+    } catch (e) { /* ekkert deilt ennþá */ }
+
+    if (!gotGlobal) {
+      // Flytja eldri, staðbundin úrslit (úr fyrri útgáfu) yfir í deilt minni - einu sinni
+      try {
+        const legacy = await window.storage.get(STORAGE_KEY, false);
+        if (legacy && legacy.value) {
+          const parsed = JSON.parse(legacy.value);
+          applyGlobalPayload(parsed);
+          const hasSomething = Object.keys(results).length || Object.keys(gameScores).length || actuals.phase1 || actuals.phase2;
+          if (hasSomething) await saveGlobal();
+        }
+      } catch (e) { /* ekkert eldra til */ }
+    }
+
+    // 2) Eigin spá - úr hópnum sem er skráður (undir innskráðu nafni), annars staðbundin einkaspá
+    if (league.code && identity.slug) {
+      try {
+        const res = await window.storage.get(playerStorageKey(league.code, identity.slug), true);
+        if (res && res.value) applyPersonalPayload(JSON.parse(res.value));
+      } catch (e) { /* fyrsta skráning þessa leikmanns í hópnum */ }
+    } else {
+      try {
+        const res = await window.storage.get(STORAGE_KEY, false);
+        if (res && res.value) applyPersonalPayload(JSON.parse(res.value));
+      } catch (e) { /* engin vistuð einkaspá enn */ }
+    }
+
+    ["phase1", "phase2"].forEach(p => { if (!orders[p]) orders[p] = shuffledStart(); });
+  }
+
+  function openIdentityModal(thenOpenLeague) {
+    identityNameDraft = identity.name || "";
+    identityModalError = "";
+    pendingOpenLeagueAfterIdentity = !!thenOpenLeague;
+    showIdentityModal = true;
+    render();
+  }
+
+  async function confirmIdentity(nameRaw) {
+    const name = String(nameRaw || "").trim();
+    if (!name) { identityModalError = "Sláðu inn nafnið þitt."; render(); return; }
+    const slug = slugify(name);
+    if (!slug) { identityModalError = "Notaðu bókstafi eða tölur í nafnið."; render(); return; }
+    const slugChanged = identity.slug && identity.slug !== slug;
+    identity = { name, slug };
+    await saveIdentity();
+    showIdentityModal = false;
+    identityModalError = "";
+    if (slugChanged && league.code) {
+      // Nafnabreyting þýðir nýtt auðkenni í hópnum - sækja fyrirliggjandi gögn undir nýju nafninu, ef til
+      try {
+        const res = await window.storage.get(playerStorageKey(league.code, identity.slug), true);
+        if (res && res.value) applyPersonalPayload(JSON.parse(res.value));
+      } catch (e) { /* fyrsta skráning undir þessu nafni */ }
+      leaderboardState = { code: null, status: "idle", players: [], error: "" };
+    }
+    if (pendingOpenLeagueAfterIdentity) {
+      pendingOpenLeagueAfterIdentity = false;
+      openLeagueModal();
+      return;
+    }
+    statusMsg = "Þú ert skráð(ur) inn sem \u201e" + name + "\u201c.";
+    render();
+  }
+
+  function openLeagueModal() {
+    if (!identity.name) { openIdentityModal(true); return; }
+    leagueNameDraft = league.name || "";
+    leagueModalError = "";
+    showLeagueModal = true;
+    render();
+  }
+
+  async function joinLeague(nameRaw) {
+    const name = String(nameRaw || "").trim();
+    if (!name) {
+      leagueModalError = "Sláðu inn nafn hóps.";
+      render();
+      return;
+    }
+    const code = slugify(name);
+    if (!code) {
+      leagueModalError = "Notaðu bókstafi eða tölur í nafnið.";
+      render();
+      return;
+    }
+    league = { code, name };
+    await saveMembership();
+    try { await window.storage.set(leagueInfoKey(code), JSON.stringify({ name, updatedAt: Date.now() }), true); } catch (e) { /* hunsa */ }
+    try {
+      const res = await window.storage.get(playerStorageKey(code, identity.slug), true);
+      if (res && res.value) applyPersonalPayload(JSON.parse(res.value));
+    } catch (e) { /* fyrsta skráning þessa leikmanns í hópnum - núverandi spá fylgir með */ }
+    leaderboardState = { code: null, status: "idle", players: [], error: "" };
+    showLeagueModal = false;
+    leagueModalError = "";
+    statusMsg = "Þú spilar núna í hópnum \u201e" + name + "\u201c sem " + identity.name + ". Smelltu á \u201eVista allt\u201c til að deila spánni þinni.";
+    render();
+  }
+
+  async function leaveLeague() {
+    league = { code: null, name: null };
+    try { await window.storage.delete(MEMBERSHIP_KEY, false); } catch (e) { /* hunsa */ }
+    picks = {}; bonusPicks = {}; bonusGuesses = {}; secondBonusPicks = {};
+    orders = { phase1: null, phase2: null }; savedOrders = { phase1: null, phase2: null };
+    try {
+      const res = await window.storage.get(STORAGE_KEY, false);
+      if (res && res.value) applyPersonalPayload(JSON.parse(res.value));
+    } catch (e) { /* engin einkaspá til, byrjað upp á nýtt */ }
+    ["phase1", "phase2"].forEach(p => { if (!orders[p]) orders[p] = shuffledStart(); });
+    statusMsg = "Þú spilar núna í einkaham.";
+    render();
+  }
+
+  function ensureLeaderboardLoaded(code) {
+    if (leaderboardState.code === code && leaderboardState.status !== "idle") return;
+    leaderboardState = { code, status: "loading", players: [], error: "" };
+    fetchLeaderboard(code);
+  }
+
+  async function fetchLeaderboard(code) {
+    let groupName = null;
+    try {
+      const infoRes = await window.storage.get(leagueInfoKey(code), true);
+      if (infoRes && infoRes.value) {
+        const infoParsed = JSON.parse(infoRes.value);
+        if (infoParsed && infoParsed.name) groupName = infoParsed.name;
+      }
+    } catch (e) { /* engin deilt nafn skráð - nota staðbundna nafnið */ }
+    try {
+      const listRes = await window.storage.list(leaguePlayerPrefix(code), true);
+      const keys = (listRes && listRes.keys) || [];
+      const players = [];
+      for (const k of keys) {
+        try {
+          const res = await window.storage.get(k, true);
+          if (res && res.value) {
+            const parsed = JSON.parse(res.value);
+            const ctx = {
+              picks: parsed.picks || {},
+              bonusPicks: parsed.bonusPicks || {},
+              bonusGuesses: parsed.bonusGuesses || {},
+              secondBonusPicks: parsed.secondBonusPicks || {},
+              extraPicks: parsed.extraPicks || {},
+              orders: { phase1: parsed.phase1 || null, phase2: parsed.phase2 || null }
+            };
+            const g1 = pointsForCtx(ctx, "leg1");
+            const g2 = pointsForCtx(ctx, "leg2");
+            const p1 = scoreForCtx(ctx, "phase1");
+            const p2 = scoreForCtx(ctx, "phase2");
+            const extraPts = extraPointsForCtx(ctx);
+            const gamesPts = g1.pts + g2.pts;
+            const bonusPts = g1.bonus + g2.bonus + extraPts;
+            const phasePts = (p1 || 0) + (p2 || 0);
+            players.push({ name: parsed.playerName || "Ónefndur", gamesPts, bonusPts, phasePts, total: gamesPts + bonusPts + phasePts });
+          }
+        } catch (e) { /* hunsa skemmda færslu */ }
+      }
+      players.sort((a, b) => b.total - a.total || a.name.localeCompare(b.name, "is"));
+      leaderboardState = { code, status: "done", players, groupName, error: "" };
+      if (groupName && league.code === code && league.name !== groupName) {
+        league = { code, name: groupName };
+        saveMembership();
+      }
+    } catch (e) {
+      leaderboardState = { code, status: "error", players: [], groupName, error: "Ekki tókst að sækja hópstöðuna." };
+    }
+    render();
+  }
+
+  function ensureAllRegistrationsLoaded() {
+    if (allPlayersAdminState.status !== "idle") return;
+    allPlayersAdminState = { status: "loading", groups: [], error: "" };
+    fetchAllRegistrations();
+  }
+
+  async function fetchAllRegistrations() {
+    try {
+      const listRes = await window.storage.list(LEAGUE_PREFIX, true);
+      const keys = (listRes && listRes.keys) || [];
+      const groupsMap = {};
+      for (const k of keys) {
+        const rest = k.slice(LEAGUE_PREFIX.length);
+        const idx = rest.indexOf("-leikmadur-");
+        if (idx === -1) continue;
+        const code = rest.slice(0, idx);
+        const slug = rest.slice(idx + "-leikmadur-".length);
+        const entry = { key: k, code, slug, name: slug, total: 0 };
+        try {
+          const res = await window.storage.get(k, true);
+          if (res && res.value) {
+            const parsed = JSON.parse(res.value);
+            entry.name = parsed.playerName || slug;
+            const ctx = {
+              picks: parsed.picks || {},
+              bonusPicks: parsed.bonusPicks || {},
+              bonusGuesses: parsed.bonusGuesses || {},
+              secondBonusPicks: parsed.secondBonusPicks || {},
+              extraPicks: parsed.extraPicks || {},
+              orders: { phase1: parsed.phase1 || null, phase2: parsed.phase2 || null }
+            };
+            const g1 = pointsForCtx(ctx, "leg1");
+            const g2 = pointsForCtx(ctx, "leg2");
+            const p1 = scoreForCtx(ctx, "phase1");
+            const p2 = scoreForCtx(ctx, "phase2");
+            entry.total = g1.combined + g2.combined + (p1 || 0) + (p2 || 0) + extraPointsForCtx(ctx);
+          }
+        } catch (e) { /* skemmd færsla - sýna með sjálfgefnum gildum */ }
+        if (!groupsMap[code]) groupsMap[code] = [];
+        groupsMap[code].push(entry);
+      }
+      const codes = Object.keys(groupsMap).sort((a, b) => a.localeCompare(b, "is"));
+      const groups = codes.map(code => ({
+        code,
+        players: groupsMap[code].sort((a, b) => b.total - a.total || a.name.localeCompare(b.name, "is"))
+      }));
+      const groupSummaries = [];
+      for (const code of codes) {
+        let name = code;
+        try {
+          const infoRes = await window.storage.get(leagueInfoKey(code), true);
+          if (infoRes && infoRes.value) {
+            const infoParsed = JSON.parse(infoRes.value);
+            if (infoParsed && infoParsed.name) name = infoParsed.name;
+          }
+        } catch (e) { /* engin hópaupplýsing skráð - nota kóðann */ }
+        groupSummaries.push({ code, name, playerCount: groupsMap[code].length });
+      }
+      allPlayersAdminState = { status: "done", groups, error: "" };
+      allGroupsAdminState = { status: "done", groups: groupSummaries, error: "" };
+    } catch (e) {
+      allPlayersAdminState = { status: "error", groups: [], error: "Ekki tókst að sækja skráða aðila." };
+      allGroupsAdminState = { status: "error", groups: [], error: "Ekki tókst að sækja hópalistann." };
+    }
+    render();
+  }
+
+  function findAdminEntry(key) {
+    for (const g of allPlayersAdminState.groups) {
+      const found = g.players.find(p => p.key === key);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  function findAdminGroupEntry(code) {
+    return allGroupsAdminState.groups.find(g => g.code === code) || null;
+  }
+
+  function openAdminGroupModal(entry) {
+    adminGroupModalTarget = entry;
+    adminGroupNameDraft = entry.name;
+    adminGroupModalError = "";
+    showAdminGroupModal = true;
+    render();
+  }
+
+  async function saveAdminGroupRename(newNameRaw) {
+    const name = String(newNameRaw || "").trim();
+    if (!name) { adminGroupModalError = "Sláðu inn nafn hóps."; render(); return; }
+    const target = adminGroupModalTarget;
+    if (!target) { showAdminGroupModal = false; render(); return; }
+    try {
+      await window.storage.set(leagueInfoKey(target.code), JSON.stringify({ name, updatedAt: Date.now() }), true);
+      showAdminGroupModal = false;
+      adminGroupModalTarget = null;
+      allPlayersAdminState = { status: "idle", groups: [], error: "" };
+      allGroupsAdminState = { status: "idle", groups: [], error: "" };
+      leaderboardState = { code: null, status: "idle", players: [], error: "" };
+      render();
+      ensureAllRegistrationsLoaded();
+    } catch (e) {
+      adminGroupModalError = "Ekki tókst að vista breytingu.";
+      render();
+    }
+  }
+
+  async function deleteAdminGroup() {
+    const target = adminGroupModalTarget;
+    if (!target) { showAdminGroupModal = false; render(); return; }
+    try {
+      const listRes = await window.storage.list(leaguePlayerPrefix(target.code), true);
+      const keys = (listRes && listRes.keys) || [];
+      for (const k of keys) {
+        try { await window.storage.delete(k, true); } catch (e) { /* hunsa */ }
+      }
+      try { await window.storage.delete(leagueInfoKey(target.code), true); } catch (e) { /* hunsa */ }
+    } catch (e) { /* hunsa */ }
+    showAdminGroupModal = false;
+    adminGroupModalTarget = null;
+    allPlayersAdminState = { status: "idle", groups: [], error: "" };
+    allGroupsAdminState = { status: "idle", groups: [], error: "" };
+    leaderboardState = { code: null, status: "idle", players: [], error: "" };
+    render();
+    ensureAllRegistrationsLoaded();
+  }
+
+  function renderAdminGroupsPanelHtml() {
+    let inner = "";
+    if (allGroupsAdminState.status === "loading") {
+      inner = `<p class="loading">Sæki hópalistann &hellip;</p>`;
+    } else if (allGroupsAdminState.status === "error") {
+      inner = `<p class="modal-error">${escapeHtml(allGroupsAdminState.error)}</p>`;
+    } else {
+      const groups = allGroupsAdminState.groups;
+      if (!groups.length) {
+        inner = `<p class="scoreboard-note">Engir hópar hafa verið stofnaðir enn.</p>`;
+      } else {
+        inner = groups.map(g => `
+          <div class="admin-player-row">
+            <div style="flex:1;">
+              <div class="admin-player-name">${escapeHtml(g.name)}</div>
+              <div class="admin-player-meta">Kóði: ${escapeHtml(g.code)} &middot; ${g.playerCount} leikmenn</div>
+            </div>
+            <button class="btn-link admin-manage-group-btn" data-code="${escapeHtml(g.code)}" type="button">Stjórna</button>
+          </div>
+        `).join("");
+      }
+    }
+    return `
+      <div class="admin-players-panel">
+        <p class="score-title" style="margin-bottom:8px;">Stjórnun &middot; allir hópar</p>
+        <p class="admin-only-note">Að breyta nafni breytir birtingarnafninu sem allir í hópnum sjá. Að eyða hóp fjarlægir alla leikmenn hans varanlega.</p>
+        ${inner}
+      </div>
+    `;
+  }
+
+  function openAdminPlayerModal(entry) {
+    adminPlayerModalTarget = entry;
+    adminPlayerNameDraft = entry.name;
+    adminPlayerModalError = "";
+    showAdminPlayerModal = true;
+    render();
+  }
+
+  async function saveAdminPlayerRename(newNameRaw) {
+    const name = String(newNameRaw || "").trim();
+    if (!name) { adminPlayerModalError = "Sláðu inn nafn."; render(); return; }
+    const target = adminPlayerModalTarget;
+    if (!target) { showAdminPlayerModal = false; render(); return; }
+    try {
+      const res = await window.storage.get(target.key, true);
+      const parsed = (res && res.value) ? JSON.parse(res.value) : {};
+      parsed.playerName = name;
+      await window.storage.set(target.key, JSON.stringify(parsed), true);
+      showAdminPlayerModal = false;
+      adminPlayerModalTarget = null;
+      allPlayersAdminState = { status: "idle", groups: [], error: "" };
+      leaderboardState = { code: null, status: "idle", players: [], error: "" };
+      render();
+      ensureAllRegistrationsLoaded();
+    } catch (e) {
+      adminPlayerModalError = "Ekki tókst að vista breytingu.";
+      render();
+    }
+  }
+
+  async function deleteAdminPlayer() {
+    const target = adminPlayerModalTarget;
+    if (!target) { showAdminPlayerModal = false; render(); return; }
+    try {
+      await window.storage.delete(target.key, true);
+    } catch (e) { /* hunsa */ }
+    showAdminPlayerModal = false;
+    adminPlayerModalTarget = null;
+    allPlayersAdminState = { status: "idle", groups: [], error: "" };
+    leaderboardState = { code: null, status: "idle", players: [], error: "" };
+    render();
+    ensureAllRegistrationsLoaded();
+  }
+
+  function renderAdminPlayersPanelHtml() {
+    let inner = "";
+    if (allPlayersAdminState.status === "loading") {
+      inner = `<p class="loading">Sæki alla skráða aðila &hellip;</p>`;
+    } else if (allPlayersAdminState.status === "error") {
+      inner = `
+        <p class="modal-error">${escapeHtml(allPlayersAdminState.error)}</p>
+        <button class="btn btn-secondary" id="admin-players-refresh-btn" type="button">Reyna aftur</button>
+      `;
+    } else {
+      const groups = allPlayersAdminState.groups;
+      if (!groups.length) {
+        inner = `<p class="scoreboard-note">Engir skráðir aðilar fundust í neinum hóp.</p>`;
+      } else {
+        inner = groups.map(g => `
+          <p class="admin-players-group-title">Hópur: ${escapeHtml(g.code)} (${g.players.length})</p>
+          ${g.players.map(p => `
+            <div class="admin-player-row">
+              <div style="flex:1;">
+                <div class="admin-player-name">${escapeHtml(p.name)}</div>
+                <div class="admin-player-meta">${p.total} stig samtals</div>
+              </div>
+              <button class="btn-link admin-manage-btn" data-key="${escapeHtml(p.key)}" type="button">Stjórna</button>
+            </div>
+          `).join("")}
+        `).join("");
+        inner += `<button class="btn btn-secondary" id="admin-players-refresh-btn" type="button" style="margin-top:8px;">Uppfæra lista</button>`;
+      }
+    }
+    return `
+      <div class="admin-players-panel">
+        <p class="score-title" style="margin-bottom:8px;">Stjórnun &middot; allir skráðir aðilar</p>
+        <p class="admin-only-note">Hér sést hver einasti leikmaður sem hefur vistað spá í einhverjum hóp, óháð því hvaða hóp þú ert sjálf(ur) í.</p>
+        ${inner}
+      </div>
+    `;
+  }
+
+  async function requestAdminLogin() {
+    const statusEl = document.getElementById("status-line");
+    adminError = "";
+    statusMsg = "Athuga stjórnandaréttindi\u2026";
+    if (statusEl) statusEl.textContent = statusMsg;
+    let ok = false;
+    try {
+      ok = window.__checkIsAdmin ? await window.__checkIsAdmin() : false;
+    } catch (e) { ok = false; }
+    if (ok) {
+      isAdmin = true;
+      statusMsg = "Þú ert nú skráð(ur) inn sem stjórnandi.";
+    } else {
+      statusMsg = "Þessi aðgangur er ekki skráður sem stjórnandi. Biddu umsjónarmann hópsins um að bæta netfanginu þínu við \u201eadmins\u201c töfluna í Supabase.";
+    }
+    if (statusEl) statusEl.textContent = statusMsg;
+    render();
+  }
+
+  async function saveAll() {
+    const statusEl = document.getElementById("status-line");
+    try {
+      const globalOk = await saveGlobal();
+      const personalPayload = {
+        picks,
+        bonusPicks,
+        bonusGuesses,
+        secondBonusPicks,
+        extraPicks,
+        phase1: orders.phase1, phase2: orders.phase2,
+        playerName: identity.name || null,
+        savedAt: Date.now()
+      };
+      let personalOk;
+      if (league.code && identity.slug) {
+        personalOk = await window.storage.set(playerStorageKey(league.code, identity.slug), JSON.stringify(personalPayload), true);
+      } else {
+        personalOk = await window.storage.set(STORAGE_KEY, JSON.stringify(personalPayload), false);
+      }
+      if (globalOk && personalOk) {
+        savedOrders.phase1 = orders.phase1.slice();
+        savedOrders.phase2 = orders.phase2.slice();
+        picksDirty = false;
+        statusMsg = league.code ? ("Allt vistað og deilt með hópnum \u201e" + league.name + "\u201c.") : "Allt vistað.";
+        if (league.code) leaderboardState = { code: null, status: "idle", players: [], error: "" };
+      } else {
+        statusMsg = "Ekki tókst að vista. Prófaðu aftur.";
+      }
+    } catch (e) {
+      statusMsg = "Ekki tókst að vista. Prófaðu aftur.";
+    }
+    if (statusEl) statusEl.textContent = statusMsg;
+    render();
+  }
+
+  // --- leikjaspá helpers ---
+  function renderRoundsHtml(leg) {
+    const rounds = leg === "leg1" ? SCHEDULE.leg1 : SCHEDULE.leg2;
+    const roundOffset = leg === "leg1" ? 1 : ROUNDS_PER_LEG + 1;
+    const editing = isAdmin && resultEntryMode[leg];
+    let html = "";
+    rounds.forEach((pairs, rIdx) => {
+      const roundKey = leg + "-r" + rIdx;
+      const rp = pointsForRound(leg, rIdx);
+      const roundScoreHtml = (rp.withResult > 0 || rp.bonus > 0)
+        ? `<span class="round-score">${rp.combined} stig</span>`
+        : `<span class="round-score round-score-pending">Engin úrslit</span>`;
+      html += `<div class="round"><p class="round-sub-head"><span>Umferð ${roundOffset + rIdx}</span>${roundScoreHtml}</p>`;
+
+      const lockInfo = roundLockInfo(roundKey);
+      const locked = !!(lockInfo && lockInfo.locked);
+      if (editing) {
+        const lockBadgeHtml = lockInfo
+          ? (locked
+              ? `<span class="lock-badge locked">Lokað fyrir giskanir frá kl. ${fmtDateTime(lockInfo.lockTime)}</span>`
+              : `<span class="lock-badge">Lokast kl. ${fmtDateTime(lockInfo.lockTime)} (60 mín. fyrir fyrsta leik)</span>`)
+          : `<span class="lock-badge pending">Engin dagsetning skráð &ndash; umferð opin</span>`;
+        html += `
+          <div class="round-lock-row">
+            <label class="round-lock-label">Fyrsti leikur umferðar:</label>
+            <input type="datetime-local" class="round-start-input" data-round="${roundKey}" value="${roundStartTimes[roundKey] || ""}" />
+            ${lockBadgeHtml}
+          </div>
+        `;
+      }
+      const pickDisabled = locked ? "disabled" : "";
+
+      const bp = bonusPicks[roundKey];
+      let bonusOptionsHtml = `<option value="">Ekkert valið</option>`;
+      pairs.forEach((p, gIdx) => {
+        const gid = gameId(leg, rIdx, gIdx);
+        const homeSel = bp && bp.gameId === gid && bp.side === "home" ? "selected" : "";
+        const awaySel = bp && bp.gameId === gid && bp.side === "away" ? "selected" : "";
+        bonusOptionsHtml += `<option value="${gid}|home" ${homeSel}>${p.home} (v. ${p.away})</option>`;
+        bonusOptionsHtml += `<option value="${gid}|away" ${awaySel}>${p.away} (v. ${p.home})</option>`;
+      });
+
+      let pickedTeamName = "";
+      let scoreVal = null;
+      let guessVal = bonusGuesses[roundKey];
+      let bonusEarnedPts = 0;
+      if (bp) {
+        const gIdx = pairs.findIndex((p, i) => gameId(leg, rIdx, i) === bp.gameId);
+        if (gIdx !== -1) {
+          const p = pairs[gIdx];
+          pickedTeamName = bp.side === "home" ? p.home : p.away;
+          const sc = gameScores[bp.gameId];
+          scoreVal = sc ? sc[bp.side] : null;
+          if (typeof scoreVal === "number") {
+            if (typeof guessVal === "number" && guessVal === scoreVal) bonusEarnedPts = 3;
+            else if (scoreVal >= 100) bonusEarnedPts = 2;
+          }
+        }
+      }
+      let bonusBadgeText;
+      if (bonusEarnedPts === 3) bonusBadgeText = "+3 stig \u2713 (nákvæmlega rétt)";
+      else if (bonusEarnedPts === 2) bonusBadgeText = "+2 stig \u2713 (\u2265 100)";
+      else if (scoreVal !== null && scoreVal !== undefined) bonusBadgeText = "Undir 100";
+      else bonusBadgeText = "Ekki skráð";
+
+      const sbp = secondBonusPicks[roundKey];
+      const roundTeams = pairs.reduce((acc, p) => acc.concat([p.home, p.away]), []);
+      let secondOptionsHtml = `<option value="">Ekkert valið</option>` +
+        roundTeams.map(t => `<option value="${t}" ${sbp === t ? "selected" : ""}>${t}</option>`).join("");
+      const lowest = lowestScorerForRound(leg, rIdx);
+      let secondStatusHtml = "";
+      if (sbp) {
+        if (!lowest) secondStatusHtml = `<span class="bonus-badge">Bíður eftir öllum úrslitum</span>`;
+        else if (lowest.team === sbp) secondStatusHtml = `<span class="bonus-badge earned">+2 stig \u2713 (${lowest.score} stig)</span>`;
+        else secondStatusHtml = `<span class="bonus-badge">Ekki lægst (${lowest.team}, ${lowest.score} stig)</span>`;
+      }
+
+      html += `
+        <div class="bonus-picker">
+          <div class="bonus-picker-row">
+            <span class="bonus-picker-label">100 stig eða meira</span>
+            <select class="bonus-select" data-round="${roundKey}" ${pickDisabled}>${bonusOptionsHtml}</select>
+          </div>
+          ${bp ? `
+            <div class="bonus-score-row">
+              <label class="bonus-score-label">Þín tala fyrir ${pickedTeamName}:</label>
+              <input type="number" min="0" step="1" class="bonus-guess-input" data-round="${roundKey}" value="${guessVal !== null && guessVal !== undefined ? guessVal : ""}" placeholder="t.d. 104" ${pickDisabled} />
+            </div>
+            <div class="bonus-score-row">
+              <label class="bonus-score-label">Raunveruleg stig ${pickedTeamName}:</label>
+              <input type="number" min="0" step="1" class="bonus-score-input" data-game="${bp.gameId}" data-side="${bp.side}" value="${scoreVal !== null && scoreVal !== undefined ? scoreVal : ""}" placeholder="t.d. 104" ${isAdmin ? "" : "disabled"} />
+              <span class="bonus-badge ${bonusEarnedPts > 0 ? "earned" : ""}">${bonusBadgeText}</span>
+            </div>
+          ` : ""}
+        </div>
+        <div class="bonus-picker">
+          <div class="bonus-picker-row">
+            <span class="bonus-picker-label">Fæst stig í umferðinni</span>
+            <select class="lowscore-select" data-round="${roundKey}" ${pickDisabled}>${secondOptionsHtml}</select>
+          </div>
+          ${sbp ? `<div class="bonus-score-row">${secondStatusHtml}</div>` : ""}
+        </div>
+      `;
+      pairs.forEach((p, gIdx) => {
+        const id = gameId(leg, rIdx, gIdx);
+        const pick = picks[id];
+        const result = results[id];
+        const isCorrect = !!(result && pick && pick === result);
+        const isWrong = !!(result && pick && pick !== result);
+        const rowClass = "game-row" + (isCorrect ? " game-correct" : "") + (isWrong ? " game-wrong" : "");
+        if (editing) {
+          const sc = gameScores[id] || {};
+          html += `
+            <div class="${rowClass}" data-game="${id}">
+              <div class="score-input-group">
+                <button class="team-pick actual ${result === "home" ? "actual-selected" : ""} ${result === "away" ? "dimmed" : ""}" data-side="home" data-game="${id}">${p.home}</button>
+                <input type="number" min="0" step="1" class="game-score-input" data-game="${id}" data-side="home" value="${sc.home !== undefined && sc.home !== null ? sc.home : ""}" placeholder="stig" />
+              </div>
+              <span class="vs">v.</span>
+              <div class="score-input-group">
+                <input type="number" min="0" step="1" class="game-score-input" data-game="${id}" data-side="away" value="${sc.away !== undefined && sc.away !== null ? sc.away : ""}" placeholder="stig" />
+                <button class="team-pick actual ${result === "away" ? "actual-selected" : ""} ${result === "home" ? "dimmed" : ""}" data-side="away" data-game="${id}">${p.away}</button>
+              </div>
+            </div>`;
+        } else {
+          html += `
+            <div class="${rowClass}" data-game="${id}">
+              <button class="team-pick ${pick === "home" ? "selected" : ""} ${pick === "away" ? "dimmed" : ""}" data-side="home" data-game="${id}" ${pickDisabled}>${p.home}</button>
+              <span class="vs">v.</span>
+              <button class="team-pick ${pick === "away" ? "selected" : ""} ${pick === "home" ? "dimmed" : ""}" data-side="away" data-game="${id}" ${pickDisabled}>${p.away}</button>
+            </div>`;
+        }
+      });
+      html += `</div>`;
+    });
+    return html;
+  }
+
+  function fmtDateTime(d) {
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const hh = String(d.getHours()).padStart(2, "0");
+    const min = String(d.getMinutes()).padStart(2, "0");
+    return `${dd}.${mm}.${d.getFullYear()} kl. ${hh}:${min}`;
+  }
+
+  function phaseLockInfo(phase) {
+    const roundKey = phase === "phase1" ? "leg1-r0" : "leg2-r0";
+    const raw = roundStartTimes[roundKey];
+    if (!raw) return null;
+    const start = new Date(raw);
+    if (isNaN(start.getTime())) return null;
+    return { start, locked: new Date() >= start };
+  }
+
+  function roundLockInfo(roundKey) {
+    const raw = roundStartTimes[roundKey];
+    if (!raw) return null;
+    const start = new Date(raw);
+    if (isNaN(start.getTime())) return null;
+    const lockTime = new Date(start.getTime() - 60 * 60 * 1000);
+    return { start, lockTime, locked: new Date() >= lockTime };
+  }
+
+  // ctx = { picks, bonusPicks, bonusGuesses, secondBonusPicks, orders } - sjálfgefið eigin spá,
+  // en fyrir hópstöðu er ctx spá annars leikmanns. Raunveruleg úrslit (results/gameScores/actuals) eru alltaf deild öllum.
+  function currentCtx() { return { picks, bonusPicks, bonusGuesses, secondBonusPicks, orders, extraPicks }; }
+
+  function extraPointsForCtx(ctx) {
+    let pts = 0;
+    if (extraActuals.champion && ctx.extraPicks && ctx.extraPicks.champion === extraActuals.champion) pts += 5;
+    if (extraActuals.cup && ctx.extraPicks && ctx.extraPicks.cup === extraActuals.cup) pts += 5;
+    return pts;
+  }
+  function extraPointsFor() { return extraPointsForCtx(currentCtx()); }
+
+  function bonusPointsForRoundCtx(ctx, leg, rIdx) {
+    const roundKey = leg + "-r" + rIdx;
+    const bp = ctx.bonusPicks[roundKey];
+    if (!bp) return 0;
+    const sc = gameScores[bp.gameId];
+    if (!sc) return 0;
+    const actual = sc[bp.side];
+    if (typeof actual !== "number") return 0;
+    const guess = ctx.bonusGuesses[roundKey];
+    if (typeof guess === "number" && guess === actual) return 3;
+    if (actual >= 100) return 2;
+    return 0;
+  }
+  function bonusPointsForRound(leg, rIdx) { return bonusPointsForRoundCtx(currentCtx(), leg, rIdx); }
+
+  function lowestScorerForRound(leg, rIdx) {
+    const pairs = (leg === "leg1" ? SCHEDULE.leg1 : SCHEDULE.leg2)[rIdx];
+    let minTeam = null, minScore = Infinity, allScored = true;
+    pairs.forEach((p, gIdx) => {
+      const id = gameId(leg, rIdx, gIdx);
+      const sc = gameScores[id];
+      ["home", "away"].forEach(side => {
+        const val = sc ? sc[side] : null;
+        if (typeof val !== "number") { allScored = false; return; }
+        if (val < minScore) { minScore = val; minTeam = side === "home" ? p.home : p.away; }
+      });
+    });
+    return allScored ? { team: minTeam, score: minScore } : null;
+  }
+
+  function lowScoreBonusForRoundCtx(ctx, leg, rIdx) {
+    const roundKey = leg + "-r" + rIdx;
+    const pick = ctx.secondBonusPicks[roundKey];
+    if (!pick) return 0;
+    const lowest = lowestScorerForRound(leg, rIdx);
+    if (!lowest) return 0;
+    return pick === lowest.team ? 2 : 0;
+  }
+  function lowScoreBonusForRound(leg, rIdx) { return lowScoreBonusForRoundCtx(currentCtx(), leg, rIdx); }
+
+  function pointsForRoundCtx(ctx, leg, rIdx) {
+    const pairs = (leg === "leg1" ? SCHEDULE.leg1 : SCHEDULE.leg2)[rIdx];
+    let pts = 0, withResult = 0;
+    pairs.forEach((p, gIdx) => {
+      const id = gameId(leg, rIdx, gIdx);
+      if (results[id]) {
+        withResult++;
+        if (ctx.picks[id] && ctx.picks[id] === results[id]) pts++;
+      }
+    });
+    const bonus1 = bonusPointsForRoundCtx(ctx, leg, rIdx);
+    const bonus2 = lowScoreBonusForRoundCtx(ctx, leg, rIdx);
+    const bonus = bonus1 + bonus2;
+    return { pts, withResult, total: pairs.length, bonus, bonus1, bonus2, combined: pts + bonus };
+  }
+  function pointsForRound(leg, rIdx) { return pointsForRoundCtx(currentCtx(), leg, rIdx); }
+
+  function pointsForCtx(ctx, leg) {
+    const rounds = leg === "leg1" ? SCHEDULE.leg1 : SCHEDULE.leg2;
+    let pts = 0, withResult = 0, bonus = 0;
+    rounds.forEach((pairs, rIdx) => {
+      pairs.forEach((p, gIdx) => {
+        const id = gameId(leg, rIdx, gIdx);
+        if (results[id]) {
+          withResult++;
+          if (ctx.picks[id] && ctx.picks[id] === results[id]) pts++;
+        }
+      });
+      bonus += bonusPointsForRoundCtx(ctx, leg, rIdx) + lowScoreBonusForRoundCtx(ctx, leg, rIdx);
+    });
+    return { pts, withResult, bonus, combined: pts + bonus };
+  }
+  function pointsFor(leg) { return pointsForCtx(currentCtx(), leg); }
+
+  function computeStandings() {
+    const stats = {};
+    TEAMS.forEach(t => { stats[t] = { team: t, played: 0, wins: 0, losses: 0, points: 0 }; });
+    ["leg1", "leg2"].forEach(leg => {
+      const rounds = leg === "leg1" ? SCHEDULE.leg1 : SCHEDULE.leg2;
+      rounds.forEach((pairs, rIdx) => {
+        pairs.forEach((p, gIdx) => {
+          const id = gameId(leg, rIdx, gIdx);
+          const res = results[id];
+          if (!res) return;
+          const winner = res === "home" ? p.home : p.away;
+          const loser = res === "home" ? p.away : p.home;
+          stats[winner].played++; stats[winner].wins++; stats[winner].points += 2;
+          stats[loser].played++; stats[loser].losses++;
+        });
+      });
+    });
+    return Object.values(stats).sort((a, b) => b.points - a.points || b.wins - a.wins || a.team.localeCompare(b.team, "is"));
+  }
+
+  function totalPoints() {
+    const a = pointsFor("leg1");
+    const b = pointsFor("leg2");
+    return { pts: a.pts + b.pts, withResult: a.withResult + b.withResult, bonus: a.bonus + b.bonus, combined: a.combined + b.combined };
+  }
+
+  function updateProgress(leg) {
+    const activeCount = pickedCount(leg);
+    const activeTotal = ROUNDS_PER_LEG * (TEAMS.length / 2);
+    const fillEl = document.getElementById("progress-fill");
+    const labelEl = document.getElementById("progress-label");
+    if (fillEl) fillEl.style.width = Math.round((activeCount / activeTotal) * 100) + "%";
+    if (labelEl) labelEl.textContent = activeCount + " / " + activeTotal + " leikir valdir";
+  }
+
+  // --- stöðuspá helpers ---
+  function moveTeam(phase, index, direction) {
+    const order = orders[phase];
+    const target = index + direction;
+    if (target < 0 || target >= order.length) return;
+    const copy = order.slice();
+    [copy[index], copy[target]] = [copy[target], copy[index]];
+    orders[phase] = copy;
+    flashRow = target;
+    render();
+  }
+
+  function moveActual(phase, index, direction) {
+    if (!actuals[phase]) actuals[phase] = TEAMS.slice();
+    const order = actuals[phase];
+    const target = index + direction;
+    if (target < 0 || target >= order.length) return;
+    const copy = order.slice();
+    [copy[index], copy[target]] = [copy[target], copy[index]];
+    actuals[phase] = copy;
+    render();
+  }
+
+  function scoreForCtx(ctx, phase) {
+    if (!actuals[phase] || !ctx.orders[phase]) return null;
+    let pts = 0;
+    ctx.orders[phase].forEach((team, idx) => { if (actuals[phase][idx] === team) pts++; });
+    return pts;
+  }
+  function scoreFor(phase) { return scoreForCtx(currentCtx(), phase); }
+
+  function resetOrder(phase) { orders[phase] = shuffledStart(); render(); }
+
+  function isDirty(phase) {
+    if (!savedOrders[phase]) return true;
+    return orders[phase].some((t, i) => t !== savedOrders[phase][i]);
+  }
+
+  function render() {
+    const isGameTab = activeTab === "leg1" || activeTab === "leg2";
+    const isPhaseTab = activeTab === "phase1" || activeTab === "phase2";
+    const isScoreTab = activeTab === "score";
+    const isLeagueTab = activeTab === "league";
+    const isPoolTab = activeTab === "pool";
+    const isExtraTab = activeTab === "extra";
+    const phaseLockedInfo = isPhaseTab ? phaseLockInfo(activeTab) : null;
+    const phaseLocked = !!(phaseLockedInfo && phaseLockedInfo.locked);
+
+    const headTitle = isGameTab ? "Giskaðu á leikina" : (isPhaseTab ? "Giskaðu á stöðuna" : (isScoreTab ? "Stigaskor" : (isLeagueTab ? "Raunveruleg staða í deildinni" : (isPoolTab ? "Hópurinn þinn" : "Aukastig"))));
+    const headSub = isGameTab
+      ? "Veldu sigurvegara í hverjum leik, umferð fyrir umferð."
+      : (isPhaseTab
+        ? "Raðaðu liðunum í þá röð sem þú heldur að standi eftir hvorn hluta tímabilsins. Þú færð 1 stig fyrir hvert lið í réttu sæti."
+        : (isScoreTab
+          ? "Samantekt allra stiga sem þú hefur unnið þér inn í giskleiknum."
+          : (isLeagueTab
+            ? "Deildarstaðan reiknuð út frá öllum skráðum leikjaúrslitum. Sigur gefur 2 stig, tap gefur 1 stig."
+            : (isPoolTab
+              ? "Berðu spána þína og stigin saman við aðra í sama vinahópi."
+              : "Veldu hvaða lið verður Íslandsmeistari og bikarmeistari karla 2027. 5 stig fást fyrir hvort rétt val."))));
+
+    const poolBannerHtml = identity.name
+      ? (league.code
+          ? `<div class="pool-banner"><span>Þú ert <strong>${escapeHtml(identity.name)}</strong> og spilar í hópnum <strong>${escapeHtml(league.name)}</strong>.</span><span style="display:flex; gap:6px; flex-wrap:wrap;"><button class="btn-link" id="switch-league-btn" type="button">Skipta um hóp</button><button class="btn-link" id="rename-identity-btn" type="button">Breyta nafni</button></span></div>`
+          : `<div class="pool-banner"><span>Þú ert <strong>${escapeHtml(identity.name)}</strong>. Þú spilar núna í einkaham.</span><span style="display:flex; gap:6px; flex-wrap:wrap;"><button class="btn-link" id="open-league-btn" type="button">Velja hóp</button><button class="btn-link" id="rename-identity-btn" type="button">Breyta nafni</button></span></div>`)
+      : `<div class="pool-banner"><span>Þú spilar núna í einkaham.</span><button class="btn-link" id="open-league-btn" type="button">Stofna innskráning / velja hóp</button></div>`;
+
+    root.innerHTML = `
+      <div class="wrap">
+        <div class="court-bg">
+          <div class="net-lines"></div>
+          <p class="eyebrow">Bónusdeild karla · 2026&ndash;2027</p>
+          <h1>${headTitle}</h1>
+          <p class="sub">${headSub}</p>
+          ${poolBannerHtml}
+          ${isGameTab ? `<div class="note">Liðaröðin hér er reiknuð með hefðbundinni umferðaruppröðun, því opinber leikjaskrá KKÍ með dagsetningum og völlum liggur ekki fyrir í aðgengilegu formi ennþá.</div>` : ""}
+
+          <div class="tabs">
+            <button class="tab-btn ${activeTab === "leg1" ? "active" : ""}" data-tab="leg1">Leikir 1&ndash;11</button>
+            <button class="tab-btn ${activeTab === "leg2" ? "active" : ""}" data-tab="leg2">Leikir 12&ndash;22</button>
+          </div>
+          <div class="tabs last">
+            <button class="tab-btn ${activeTab === "phase1" ? "active" : ""}" data-tab="phase1">Staða &middot; 1&ndash;11</button>
+            <button class="tab-btn ${activeTab === "phase2" ? "active" : ""}" data-tab="phase2">Lokastaða &middot; 1&ndash;22</button>
+          </div>
+          <div class="tabs last">
+            <button class="tab-btn ${activeTab === "extra" ? "active" : ""}" data-tab="extra">Aukastig</button>
+            <button class="tab-btn ${activeTab === "score" ? "active" : ""}" data-tab="score">Stigaskor</button>
+          </div>
+          <div class="tabs last">
+            <button class="tab-btn ${activeTab === "league" ? "active" : ""}" data-tab="league">Deildarstaða</button>
+            <button class="tab-btn ${activeTab === "pool" ? "active" : ""}" data-tab="pool">Hópurinn</button>
+          </div>
+
+          <div id="content"></div>
+
+          <div class="actions">
+            ${!isScoreTab && !isLeagueTab && !isPoolTab ? `<button class="btn btn-primary" id="save-btn">Vista allt</button>` : ""}
+            ${isPhaseTab && !phaseLocked ? `<button class="btn btn-secondary" id="reset-btn">Byrja þennan flipa upp á nýtt</button>` : ""}
+            <button class="btn btn-secondary" id="admin-btn">${isAdmin ? "Útskrá stjórnanda" : "Innskráning stjórnanda"}</button>
+          </div>
+          <p class="status-line" id="status-line"></p>
+        </div>
+      </div>
+      ${showAdminModal ? `
+        <div class="modal-overlay" id="admin-modal-overlay">
+          <div class="modal-box">
+            <p class="modal-title">Innskráning stjórnanda</p>
+            <p class="modal-sub">Sláðu inn stjórnandalykilorð til að fá aðgang að því að skrá dagsetningu og tíma leikja.</p>
+            <input type="password" class="modal-input" id="admin-pass-input" placeholder="Lykilorð" autocomplete="off" />
+            ${adminError ? `<p class="modal-error">${adminError}</p>` : ""}
+            <div class="modal-actions">
+              <button class="btn btn-secondary" id="admin-cancel-btn">Hætta við</button>
+              <button class="btn btn-primary" id="admin-confirm-btn">Staðfesta</button>
+            </div>
+          </div>
+        </div>
+      ` : ""}
+      ${showLeagueModal ? `
+        <div class="modal-overlay" id="league-modal-overlay">
+          <div class="modal-box">
+            <p class="modal-title">Velja hóp</p>
+            <p class="modal-sub">Þú ert skráð(ur) inn sem <strong>${escapeHtml(identity.name || "")}</strong>. Allir sem slá inn sama nafn hóps spila saman og sjá stöðu hvers annars.</p>
+            <input type="text" class="modal-input" id="league-name-input" placeholder="Nafn hóps, t.d. Höttudrengirnir" value="${escapeHtml(leagueNameDraft)}" autocomplete="off" />
+            ${leagueModalError ? `<p class="modal-error">${escapeHtml(leagueModalError)}</p>` : ""}
+            <p class="pool-note">Athugið: spáin þín og stigin verða sýnileg öllum sem slá inn sama hópsnafn.</p>
+            <div class="modal-actions">
+              ${league.code ? `<button class="btn btn-secondary" id="leave-league-btn" type="button">Yfirgefa hóp</button>` : ""}
+              <button class="btn btn-secondary" id="league-cancel-btn" type="button">Hætta við</button>
+              <button class="btn btn-primary" id="league-confirm-btn" type="button">Staðfesta</button>
+            </div>
+          </div>
+        </div>
+      ` : ""}
+      ${showIdentityModal ? `
+        <div class="modal-overlay" id="identity-modal-overlay">
+          <div class="modal-box">
+            <p class="modal-title">${identity.name ? "Breyta nafni" : "Innskráning"}</p>
+            <p class="modal-sub">Þetta nafn er innskráningin þín - það breytist ekki þótt þú skiptir um hóp síðar.</p>
+            <input type="text" class="modal-input" id="identity-name-input" placeholder="Nafnið þitt" value="${escapeHtml(identityNameDraft)}" autocomplete="off" />
+            ${identityModalError ? `<p class="modal-error">${escapeHtml(identityModalError)}</p>` : ""}
+            <div class="modal-actions">
+              <button class="btn btn-secondary" id="identity-cancel-btn" type="button">Hætta við</button>
+              <button class="btn btn-primary" id="identity-confirm-btn" type="button">Staðfesta</button>
+            </div>
+          </div>
+        </div>
+      ` : ""}
+      ${showAdminPlayerModal && adminPlayerModalTarget ? `
+        <div class="modal-overlay" id="admin-player-modal-overlay">
+          <div class="modal-box">
+            <p class="modal-title">Stjórna leikmanni</p>
+            <p class="modal-sub">Hópur: ${escapeHtml(adminPlayerModalTarget.code)}</p>
+            <input type="text" class="modal-input" id="admin-player-name-input" placeholder="Nafn leikmanns" value="${escapeHtml(adminPlayerNameDraft)}" autocomplete="off" />
+            ${adminPlayerModalError ? `<p class="modal-error">${escapeHtml(adminPlayerModalError)}</p>` : ""}
+            <p class="admin-only-note">„Eyða leikmanni&ldquo; fjarlægir spá og stig þessa leikmanns varanlega úr hópnum.</p>
+            <div class="modal-actions">
+              <button class="btn btn-secondary" id="admin-player-delete-btn" type="button">Eyða leikmanni</button>
+              <button class="btn btn-secondary" id="admin-player-cancel-btn" type="button">Hætta við</button>
+              <button class="btn btn-primary" id="admin-player-save-btn" type="button">Vista nafn</button>
+            </div>
+          </div>
+        </div>
+      ` : ""}
+      ${showAdminGroupModal && adminGroupModalTarget ? `
+        <div class="modal-overlay" id="admin-group-modal-overlay">
+          <div class="modal-box">
+            <p class="modal-title">Stjórna hóp</p>
+            <p class="modal-sub">Kóði: ${escapeHtml(adminGroupModalTarget.code)} &middot; ${adminGroupModalTarget.playerCount} leikmenn</p>
+            <input type="text" class="modal-input" id="admin-group-name-input" placeholder="Nafn hóps" value="${escapeHtml(adminGroupNameDraft)}" autocomplete="off" />
+            ${adminGroupModalError ? `<p class="modal-error">${escapeHtml(adminGroupModalError)}</p>` : ""}
+            <p class="admin-only-note">„Eyða hóp&ldquo; fjarlægir alla leikmenn og spár þeirra í þessum hóp varanlega.</p>
+            <div class="modal-actions">
+              <button class="btn btn-secondary" id="admin-group-delete-btn" type="button">Eyða hóp</button>
+              <button class="btn btn-secondary" id="admin-group-cancel-btn" type="button">Hætta við</button>
+              <button class="btn btn-primary" id="admin-group-save-btn" type="button">Vista nafn</button>
+            </div>
+          </div>
+        </div>
+      ` : ""}
+    `;
+
+    const contentEl = document.getElementById("content");
+
+    if (isGameTab) {
+      const editing = isAdmin && resultEntryMode[activeTab];
+      const { pts, withResult, bonus, combined } = pointsFor(activeTab);
+      const total = totalPoints();
+      contentEl.innerHTML = `
+        <div class="progress-line"><span id="progress-label">0 / 66 leikir valdir</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        ${editing ? `<div class="results-mode-banner" style="margin-top:12px;">Úrslitaskráning virk: smelltu á liðið sem vann hvern leik, skráðu stig og fyrsta leiktíma umferðar. Þetta breytir ekki giskun þinni.</div>` : `<p class="lock-explainer">Hver umferð lokast fyrir nýjar giskanir og veðmál 60 mínútum fyrir upphaf fyrsta leiks umferðarinnar. Stjórnandi skráir dagsetningu og tíma fyrsta leiks undir „Skrá/breyta úrslitum leikja" hér fyrir neðan.</p>`}
+        <div style="margin-top:16px;">${renderRoundsHtml(activeTab)}</div>
+        <div class="score-panel">
+          <div class="score-head">
+            <span class="score-title">Stig fyrir úrslit</span>
+            <span class="score-big">${combined} stig</span>
+          </div>
+          <p class="score-note">${withResult > 0 ? withResult + " leikir í þessum hluta með skráð úrslit." : "Engin úrslit skráð enn í þessum hluta."} 1 stig fæst fyrir hvern leik sem þú giskaðir réttan sigurvegara í. Auk þess fást 2 aukastig fyrir hverja umferð þar sem valið lið í &bdquo;100 stig eða meira&ldquo;-veðmálinu skorar 100 stig eða meira (3 stig ef þú giskar á nákvæmlega réttu töluna), og 2 aukastig fyrir hverja umferð þar sem &bdquo;fæst stig&ldquo;-veðmálið gengur eftir (${bonus} aukastig í þessum hluta). Samtals báðir hlutar: ${total.combined} stig (${total.withResult} leikir með úrslit, ${total.bonus} aukastig).</p>
+          ${isAdmin
+            ? `<button class="btn btn-secondary" id="toggle-results-btn">${editing ? "Loka úrslitaskráningu" : "Skrá/breyta úrslitum leikja"}</button>`
+            : `<p class="admin-only-note">Aðeins stjórnandi getur skráð eða breytt úrslitum leikja.</p><button class="btn btn-secondary" id="admin-login-inline-btn">Innskráning stjórnanda</button>`
+          }
+        </div>
+      `;
+      updateProgress(activeTab);
+
+      root.querySelectorAll(".team-pick").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-game");
+          const side = btn.getAttribute("data-side");
+          if (resultEntryMode[activeTab]) {
+            results[id] = results[id] === side ? undefined : side;
+            if (results[id] === undefined) delete results[id];
+          } else {
+            picks[id] = picks[id] === side ? undefined : side;
+            if (picks[id] === undefined) delete picks[id];
+            picksDirty = true;
+          }
+          render();
+          const statusEl = document.getElementById("status-line");
+          if (statusEl) statusEl.textContent = "Óvistaðar breytingar.";
+        });
+      });
+
+      root.querySelectorAll(".round-start-input").forEach(inp => {
+        inp.addEventListener("change", () => {
+          const roundKey = inp.getAttribute("data-round");
+          if (!inp.value) delete roundStartTimes[roundKey];
+          else roundStartTimes[roundKey] = inp.value;
+          render();
+          const statusEl = document.getElementById("status-line");
+          if (statusEl) statusEl.textContent = "Óvistaðar breytingar.";
+        });
+      });
+
+      root.querySelectorAll(".bonus-select").forEach(sel => {
+        sel.addEventListener("change", () => {
+          const roundKey = sel.getAttribute("data-round");
+          const val = sel.value;
+          if (!val) {
+            delete bonusPicks[roundKey];
+          } else {
+            const [gid, side] = val.split("|");
+            bonusPicks[roundKey] = { gameId: gid, side };
+          }
+          render();
+          const statusEl = document.getElementById("status-line");
+          if (statusEl) statusEl.textContent = "Óvistaðar breytingar.";
+        });
+      });
+
+      root.querySelectorAll(".bonus-guess-input").forEach(inp => {
+        inp.addEventListener("change", () => {
+          const roundKey = inp.getAttribute("data-round");
+          const raw = inp.value.trim();
+          const val = raw === "" ? null : Number(raw);
+          if (val === null || Number.isNaN(val)) delete bonusGuesses[roundKey];
+          else bonusGuesses[roundKey] = val;
+          render();
+          const statusEl = document.getElementById("status-line");
+          if (statusEl) statusEl.textContent = "Óvistaðar breytingar.";
+        });
+      });
+
+      root.querySelectorAll(".lowscore-select").forEach(sel => {
+        sel.addEventListener("change", () => {
+          const roundKey = sel.getAttribute("data-round");
+          const val = sel.value;
+          if (!val) delete secondBonusPicks[roundKey];
+          else secondBonusPicks[roundKey] = val;
+          render();
+          const statusEl = document.getElementById("status-line");
+          if (statusEl) statusEl.textContent = "Óvistaðar breytingar.";
+        });
+      });
+
+      root.querySelectorAll(".bonus-score-input, .game-score-input").forEach(inp => {
+        inp.addEventListener("change", () => {
+          const gid = inp.getAttribute("data-game");
+          const side = inp.getAttribute("data-side");
+          const raw = inp.value.trim();
+          const val = raw === "" ? null : Number(raw);
+          if (!gameScores[gid]) gameScores[gid] = { home: null, away: null };
+          gameScores[gid][side] = (val === null || Number.isNaN(val)) ? null : val;
+          render();
+          const statusEl = document.getElementById("status-line");
+          if (statusEl) statusEl.textContent = "Óvistaðar breytingar.";
+        });
+      });
+
+      const toggleResultsBtn = document.getElementById("toggle-results-btn");
+      if (toggleResultsBtn) {
+        toggleResultsBtn.addEventListener("click", () => {
+          resultEntryMode[activeTab] = !resultEntryMode[activeTab];
+          render();
+        });
+      }
+
+      const adminLoginInlineBtn = document.getElementById("admin-login-inline-btn");
+      if (adminLoginInlineBtn) {
+        adminLoginInlineBtn.addEventListener("click", () => {
+          requestAdminLogin();
+        });
+      }
+    } else if (isPhaseTab) {
+      const phase = activeTab;
+      const phaseTitle = phase === "phase1" ? "Staða eftir umferð 1&ndash;11" : "Lokastaða eftir umferð 1&ndash;22";
+      const phaseSub = phase === "phase1"
+        ? "Röðin eftir að hvert lið hefur mætt öllum hinum einu sinni (fyrri umferð)."
+        : "Röðin eftir allar 22 umferðirnar, tvöfaldrar umferðar.";
+      const hasActual = !!actuals[phase];
+      const pts = scoreFor(phase);
+      const showEditor = showActualEditor[phase];
+      const roundLabel = phase === "phase1" ? "1. umferð" : "12. umferð";
+      const lockBadgeHtml = phaseLockedInfo
+        ? (phaseLocked
+            ? `<span class="lock-badge locked">Lokað fyrir breytingar frá kl. ${fmtDateTime(phaseLockedInfo.start)}</span>`
+            : `<span class="lock-badge">Lokast kl. ${fmtDateTime(phaseLockedInfo.start)} (þegar ${roundLabel} byrjar)</span>`)
+        : `<span class="lock-badge pending">Dagsetning ${roundLabel} ekki skráð &ndash; röðunin er opin</span>`;
+
+      contentEl.innerHTML = `
+        <p class="round-head">${phaseTitle}</p>
+        <p class="sub" style="margin-bottom:10px;">${phaseSub}</p>
+        <div class="round-lock-row" style="margin-bottom:14px;">${lockBadgeHtml}</div>
+        <div class="list" id="list"></div>
+        <div class="score-panel">
+          <div class="score-head">
+            <span class="score-title">Stig</span>
+            ${hasActual ? `<span class="score-big">${pts} / 12 stig</span>` : `<span class="score-big" style="color:var(--text-muted); font-size:14px;">Engin raunstaða skráð</span>`}
+          </div>
+          <p class="score-note">${hasActual ? "Grænu liðin fyrir ofan lentu í nákvæmlega réttu sæti í spánni þinni." : "Skráðu raunverulegu stöðuna hér fyrir neðan þegar hún liggur fyrir, svo reiknast stigin sjálfkrafa."}</p>
+          <button class="btn btn-secondary" id="toggle-actual-btn">${showEditor ? "Fela raunverulega stöðu" : (hasActual ? "Breyta raunverulegri stöðu" : "Skrá raunverulega stöðu")}</button>
+          ${showEditor ? `<div class="actual-list" id="actual-list" style="margin-top:14px;"></div>` : ""}
+        </div>
+      `;
+
+      const listEl = document.getElementById("list");
+      const order = orders[phase];
+      order.forEach((team, idx) => {
+        const isCorrect = hasActual && actuals[phase][idx] === team;
+        const row = document.createElement("div");
+        row.className = "row" + (flashRow === idx ? " moved" : "") + (isCorrect ? " correct" : "");
+        row.innerHTML = `
+          <div class="rank">${idx + 1}</div>
+          <div class="team-name">${team}</div>
+          <div class="btn-group">
+            <button class="arrow-btn" data-dir="-1" data-idx="${idx}" aria-label="Færa ${team} upp" ${(idx === 0 || phaseLocked) ? "disabled" : ""}>&uarr;</button>
+            <button class="arrow-btn" data-dir="1" data-idx="${idx}" aria-label="Færa ${team} niður" ${(idx === order.length - 1 || phaseLocked) ? "disabled" : ""}>&darr;</button>
+          </div>
+        `;
+        listEl.appendChild(row);
+      });
+      listEl.querySelectorAll(".arrow-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.getAttribute("data-idx"), 10);
+          const dir = parseInt(btn.getAttribute("data-dir"), 10);
+          moveTeam(phase, idx, dir);
+        });
+      });
+
+      if (showEditor) {
+        const actualListEl = document.getElementById("actual-list");
+        const actualOrder = actuals[phase] || TEAMS.slice();
+        actualOrder.forEach((team, idx) => {
+          const row = document.createElement("div");
+          row.className = "actual-row";
+          row.innerHTML = `
+            <div class="rank">${idx + 1}</div>
+            <div class="team-name" style="flex:1;">${team}</div>
+            <div class="btn-group">
+              <button class="arrow-btn" data-dir="-1" data-idx="${idx}" aria-label="Færa ${team} upp" ${idx === 0 ? "disabled" : ""}>&uarr;</button>
+              <button class="arrow-btn" data-dir="1" data-idx="${idx}" aria-label="Færa ${team} niður" ${idx === actualOrder.length - 1 ? "disabled" : ""}>&darr;</button>
+            </div>
+          `;
+          actualListEl.appendChild(row);
+        });
+        actualListEl.querySelectorAll(".arrow-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const idx = parseInt(btn.getAttribute("data-idx"), 10);
+            const dir = parseInt(btn.getAttribute("data-dir"), 10);
+            moveActual(phase, idx, dir);
+          });
+        });
+      }
+
+      document.getElementById("toggle-actual-btn").addEventListener("click", () => {
+        if (!actuals[phase]) actuals[phase] = TEAMS.slice();
+        showActualEditor[phase] = !showActualEditor[phase];
+        render();
+      });
+
+      const statusEl = document.getElementById("status-line");
+      if (statusEl) statusEl.textContent = isDirty(phase) ? "Óvistaðar breytingar." : "Spáin er vistuð.";
+
+      const resetBtn = document.getElementById("reset-btn");
+      if (resetBtn) resetBtn.addEventListener("click", () => resetOrder(phase));
+    } else if (isExtraTab) {
+      // --- Aukastig: Íslandsmeistari / bikarmeistari 2027 ---
+      const champCorrect = !!(extraActuals.champion && extraPicks.champion === extraActuals.champion);
+      const cupCorrect = !!(extraActuals.cup && extraPicks.cup === extraActuals.cup);
+      const teamOptions = (selected) => `<option value="">Ekkert valið</option>` +
+        TEAMS.map(t => `<option value="${escapeHtml(t)}" ${selected === t ? "selected" : ""}>${escapeHtml(t)}</option>`).join("");
+
+      contentEl.innerHTML = `
+        <div class="bonus-picker" style="margin-bottom:14px;">
+          <div class="bonus-picker-row">
+            <span class="bonus-picker-label">Íslandsmeistari 2027</span>
+            <select class="extra-pick-select" data-field="champion">${teamOptions(extraPicks.champion)}</select>
+          </div>
+          <div class="bonus-score-row">
+            ${extraActuals.champion
+              ? `<span class="bonus-badge ${champCorrect ? "earned" : ""}">${escapeHtml(extraActuals.champion)} skráð(ur) Íslandsmeistari${champCorrect ? " \u2713 +5 stig" : ""}</span>`
+              : `<span class="bonus-badge">Íslandsmeistari ekki skráður enn</span>`}
+          </div>
+        </div>
+        <div class="bonus-picker" style="margin-bottom:14px;">
+          <div class="bonus-picker-row">
+            <span class="bonus-picker-label">Bikarmeistari 2027</span>
+            <select class="extra-pick-select" data-field="cup">${teamOptions(extraPicks.cup)}</select>
+          </div>
+          <div class="bonus-score-row">
+            ${extraActuals.cup
+              ? `<span class="bonus-badge ${cupCorrect ? "earned" : ""}">${escapeHtml(extraActuals.cup)} skráð(ur) bikarmeistari${cupCorrect ? " \u2713 +5 stig" : ""}</span>`
+              : `<span class="bonus-badge">Bikarmeistari ekki skráður enn</span>`}
+          </div>
+        </div>
+        <div class="score-panel">
+          <div class="score-head">
+            <span class="score-title">Stig fyrir aukastig</span>
+            <span class="score-big">${extraPointsFor()} / 10 stig</span>
+          </div>
+          <p class="score-note">5 stig fást fyrir hvort rétt val &ndash; Íslandsmeistara og bikarmeistara karla 2027.</p>
+          ${isAdmin ? `
+            <div class="note" style="margin-top:10px;">
+              <p style="margin:0 0 10px; font-weight:600;">Skrá raunverulega meistara (aðeins stjórnandi)</p>
+              <div class="bonus-picker-row" style="margin-bottom:10px;">
+                <span class="bonus-picker-label">Íslandsmeistari</span>
+                <select class="extra-actual-select" data-field="champion">${teamOptions(extraActuals.champion)}</select>
+              </div>
+              <div class="bonus-picker-row">
+                <span class="bonus-picker-label">Bikarmeistari</span>
+                <select class="extra-actual-select" data-field="cup">${teamOptions(extraActuals.cup)}</select>
+              </div>
+            </div>
+          ` : `<p class="admin-only-note" style="margin-top:10px;">Aðeins stjórnandi getur skráð raunverulega meistara.</p>`}
+        </div>
+      `;
+
+      root.querySelectorAll(".extra-pick-select").forEach(sel => {
+        sel.addEventListener("change", () => {
+          const field = sel.getAttribute("data-field");
+          extraPicks[field] = sel.value || null;
+          render();
+          const statusEl = document.getElementById("status-line");
+          if (statusEl) statusEl.textContent = "Óvistaðar breytingar.";
+        });
+      });
+
+      root.querySelectorAll(".extra-actual-select").forEach(sel => {
+        sel.addEventListener("change", () => {
+          const field = sel.getAttribute("data-field");
+          extraActuals[field] = sel.value || null;
+          render();
+          const statusEl = document.getElementById("status-line");
+          if (statusEl) statusEl.textContent = "Óvistaðar breytingar.";
+        });
+      });
+    } else if (isScoreTab) {
+      // --- Stigaskor ---
+      const g1 = pointsFor("leg1");
+      const g2 = pointsFor("leg2");
+      const gamesPerLeg = ROUNDS_PER_LEG * (TEAMS.length / 2);
+      const p1 = scoreFor("phase1");
+      const p2 = scoreFor("phase2");
+      const extraPts = extraPointsFor();
+      const grandTotal = g1.combined + g2.combined + (p1 || 0) + (p2 || 0) + extraPts;
+
+      contentEl.innerHTML = `
+        <div class="scoreboard-total">
+          <span class="scoreboard-total-label">Samtals stig</span>
+          <span class="scoreboard-total-value">${grandTotal}</span>
+        </div>
+        <div class="scoreboard-rows">
+          <div class="scoreboard-row">
+            <div class="scoreboard-row-main">
+              <span class="scoreboard-row-name">Leikir 1&ndash;11</span>
+              <span class="scoreboard-row-value">${g1.combined} stig</span>
+            </div>
+            <p class="scoreboard-row-detail">${g1.withResult} / ${gamesPerLeg} leikir með skráð úrslit &middot; ${g1.bonus} aukastig af veðmálum.</p>
+          </div>
+          <div class="scoreboard-row">
+            <div class="scoreboard-row-main">
+              <span class="scoreboard-row-name">Leikir 12&ndash;22</span>
+              <span class="scoreboard-row-value">${g2.combined} stig</span>
+            </div>
+            <p class="scoreboard-row-detail">${g2.withResult} / ${gamesPerLeg} leikir með skráð úrslit &middot; ${g2.bonus} aukastig af veðmálum.</p>
+          </div>
+          <div class="scoreboard-row">
+            <div class="scoreboard-row-main">
+              <span class="scoreboard-row-name">Staða &middot; umferð 1&ndash;11</span>
+              <span class="scoreboard-row-value">${p1 !== null ? p1 + " / 12 stig" : "&ndash;"}</span>
+            </div>
+            <p class="scoreboard-row-detail">${p1 !== null ? "Raunstaða skráð." : "Engin raunstaða skráð enn."}</p>
+          </div>
+          <div class="scoreboard-row">
+            <div class="scoreboard-row-main">
+              <span class="scoreboard-row-name">Lokastaða &middot; umferð 1&ndash;22</span>
+              <span class="scoreboard-row-value">${p2 !== null ? p2 + " / 12 stig" : "&ndash;"}</span>
+            </div>
+            <p class="scoreboard-row-detail">${p2 !== null ? "Raunstaða skráð." : "Engin raunstaða skráð enn."}</p>
+          </div>
+          <div class="scoreboard-row">
+            <div class="scoreboard-row-main">
+              <span class="scoreboard-row-name">Aukastig &middot; meistarar 2027</span>
+              <span class="scoreboard-row-value">${extraPts} / 10 stig</span>
+            </div>
+            <p class="scoreboard-row-detail">${extraActuals.champion || extraActuals.cup ? "Raunverulegir meistarar að hluta eða öllu leyti skráðir." : "Engir raunverulegir meistarar skráðir enn."}</p>
+          </div>
+        </div>
+        <p class="scoreboard-note">1 stig fyrir hvern leik sem giskað er rétt á. 2 aukastig fyrir hverja umferð þar sem valið lið í &bdquo;100 stig eða meira&ldquo;-veðmálinu skorar 100 stig eða meira (3 stig fyrir nákvæmlega rétta tölu), 2 aukastig fyrir hverja umferð þar sem &bdquo;fæst stig&ldquo;-veðmálið gengur eftir, 1 stig fyrir hvert lið sem lendir í réttu sæti í stöðuspánum, og 5 stig fyrir hvort réttilega giskaðan meistara (Íslandsmeistara og bikarmeistara) 2027.</p>
+      `;
+    } else if (isLeagueTab) {
+      // --- Raunveruleg staða í deildinni ---
+      const standings = computeStandings();
+      const totalGames = ROUNDS_PER_LEG * (TEAMS.length / 2) * 2;
+      const playedGames = standings.reduce((sum, s) => sum + s.played, 0) / 2;
+
+      contentEl.innerHTML = `
+        <p class="league-count">${playedGames} / ${totalGames} leikir með skráð úrslit</p>
+        <div class="league-table">
+          <div class="league-head-row">
+            <div class="league-head-rank">Nr</div>
+            <div class="league-head-team">Lið</div>
+            <div class="league-head-stat">L</div>
+            <div class="league-head-stat">S&ndash;T</div>
+            <div class="league-head-points">Stig</div>
+          </div>
+          <div id="league-list"></div>
+        </div>
+        <p class="scoreboard-note">Sigur gefur 2 stig, tap gefur 0 stig. Aðeins leikir með skráð úrslit teljast með. Röðin uppfærist sjálfkrafa eftir því sem fleiri úrslit eru skráð í leikjaflipunum.</p>
+      `;
+
+      const leagueListEl = document.getElementById("league-list");
+      standings.forEach((s, idx) => {
+        const row = document.createElement("div");
+        row.className = "league-row";
+        row.innerHTML = `
+          <div class="rank">${idx + 1}</div>
+          <div class="team-name league-team-name">${s.team}</div>
+          <div class="league-stat">${s.played}</div>
+          <div class="league-stat">${s.wins}&ndash;${s.losses}</div>
+          <div class="league-points">${s.points}</div>
+        `;
+        leagueListEl.appendChild(row);
+      });
+    } else if (isPoolTab) {
+      // --- Staða innan vinahóps (margir leikmenn) ---
+      let poolHtml = "";
+      if (!league.code) {
+        poolHtml += `
+          <div class="note">Þú ert ekki skráð(ur) í hóp núna. Stofnaðu hóp eða skráðu þig í hóp til að bera spána þína og stigin saman við vini.</div>
+          <button class="btn btn-primary" id="join-league-btn-inline" type="button">Stofna eða skrá mig í hóp</button>
+        `;
+      } else {
+        ensureLeaderboardLoaded(league.code);
+        if (leaderboardState.status === "loading") {
+          poolHtml += `<p class="loading">Sæki stöðu hópsins &hellip;</p>`;
+        } else if (leaderboardState.status === "error") {
+          poolHtml += `
+            <p class="modal-error">${escapeHtml(leaderboardState.error)}</p>
+            <button class="btn btn-secondary" id="refresh-league-btn" type="button">Reyna aftur</button>
+          `;
+        } else {
+          const players = leaderboardState.players;
+          const rowsHtml = players.map((pl, idx) => `
+            <div class="league-row">
+              <div class="rank">${idx + 1}</div>
+              <div class="team-name league-team-name" style="flex:1;">${escapeHtml(pl.name)}${pl.name === identity.name ? ` <span style="color:var(--rim); font-size:11px;">(þú)</span>` : ""}</div>
+              <div class="league-stat">${pl.gamesPts}</div>
+              <div class="league-stat">${pl.phasePts}</div>
+              <div class="league-stat">${pl.bonusPts}</div>
+              <div class="league-points">${pl.total}</div>
+            </div>
+          `).join("");
+          poolHtml += `
+            <p class="league-count">Hópur: ${escapeHtml(leaderboardState.groupName || league.name)} &middot; ${players.length} leikmenn</p>
+            <div class="league-table">
+              <div class="league-head-row">
+                <div class="league-head-rank">Nr</div>
+                <div class="league-head-team">Leikmaður</div>
+                <div class="league-head-stat">Leikir</div>
+                <div class="league-head-stat">Staða</div>
+                <div class="league-head-stat">Auka</div>
+                <div class="league-head-points">Stig</div>
+              </div>
+              <div>${rowsHtml || `<p class="scoreboard-note">Engin skráð spá enn í þessum hópi.</p>`}</div>
+            </div>
+            <p class="scoreboard-note">„Leikir&ldquo; eru stig fyrir réttar giskanir á leikjaúrslit, „Staða&ldquo; fyrir stöðuspárnar tvær, og „Auka&ldquo; fyrir veðmálin (100+ stiga veðmálið, fæst-stiga veðmálið) og aukastigin fyrir Íslands- og bikarmeistara. Hópstaðan uppfærist ekki sjálfkrafa fyrr en hver leikmaður smellir á „Vista allt&ldquo;.</p>
+            <button class="btn btn-secondary" id="refresh-league-btn" type="button">Uppfæra hópstöðu</button>
+          `;
+        }
+      }
+
+      if (isAdmin) {
+        ensureAllRegistrationsLoaded();
+        poolHtml += renderAdminGroupsPanelHtml();
+        poolHtml += renderAdminPlayersPanelHtml();
+      }
+
+      contentEl.innerHTML = poolHtml;
+
+      const joinBtnInline = document.getElementById("join-league-btn-inline");
+      if (joinBtnInline) joinBtnInline.addEventListener("click", openLeagueModal);
+
+      const refreshBtn = document.getElementById("refresh-league-btn");
+      if (refreshBtn) {
+        refreshBtn.addEventListener("click", () => {
+          leaderboardState = { code: league.code, status: "loading", players: [], error: "" };
+          render();
+          fetchLeaderboard(league.code);
+        });
+      }
+
+      const adminPlayersRefreshBtn = document.getElementById("admin-players-refresh-btn");
+      if (adminPlayersRefreshBtn) {
+        adminPlayersRefreshBtn.addEventListener("click", () => {
+          allPlayersAdminState = { status: "loading", groups: [], error: "" };
+          allGroupsAdminState = { status: "loading", groups: [], error: "" };
+          render();
+          fetchAllRegistrations();
+        });
+      }
+
+      root.querySelectorAll(".admin-manage-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const key = btn.getAttribute("data-key");
+          const entry = findAdminEntry(key);
+          if (entry) openAdminPlayerModal(entry);
+        });
+      });
+
+      root.querySelectorAll(".admin-manage-group-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const code = btn.getAttribute("data-code");
+          const entry = findAdminGroupEntry(code);
+          if (entry) openAdminGroupModal(entry);
+        });
+      });
+    }
+
+    root.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => { activeTab = btn.getAttribute("data-tab"); render(); });
+    });
+
+    const switchLeagueBtn = document.getElementById("switch-league-btn");
+    if (switchLeagueBtn) switchLeagueBtn.addEventListener("click", openLeagueModal);
+    const openLeagueBtn = document.getElementById("open-league-btn");
+    if (openLeagueBtn) openLeagueBtn.addEventListener("click", openLeagueModal);
+    const renameIdentityBtn = document.getElementById("rename-identity-btn");
+    if (renameIdentityBtn) renameIdentityBtn.addEventListener("click", () => openIdentityModal(false));
+
+    if (showLeagueModal) {
+      const overlay = document.getElementById("league-modal-overlay");
+      const nameInput = document.getElementById("league-name-input");
+      const cancelBtn = document.getElementById("league-cancel-btn");
+      const confirmBtn = document.getElementById("league-confirm-btn");
+      const leaveBtn = document.getElementById("leave-league-btn");
+      if (nameInput) nameInput.focus();
+      const doJoin = () => joinLeague(nameInput ? nameInput.value : "");
+      if (confirmBtn) confirmBtn.addEventListener("click", doJoin);
+      if (nameInput) nameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") doJoin(); });
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+          showLeagueModal = false;
+          leagueModalError = "";
+          render();
+        });
+      }
+      if (leaveBtn) {
+        leaveBtn.addEventListener("click", () => {
+          showLeagueModal = false;
+          leaveLeague();
+        });
+      }
+      if (overlay) {
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) {
+            showLeagueModal = false;
+            leagueModalError = "";
+            render();
+          }
+        });
+      }
+    }
+
+    if (showIdentityModal) {
+      const overlay = document.getElementById("identity-modal-overlay");
+      const nameInput = document.getElementById("identity-name-input");
+      const cancelBtn = document.getElementById("identity-cancel-btn");
+      const confirmBtn = document.getElementById("identity-confirm-btn");
+      if (nameInput) nameInput.focus();
+      const doConfirm = () => confirmIdentity(nameInput ? nameInput.value : "");
+      if (confirmBtn) confirmBtn.addEventListener("click", doConfirm);
+      if (nameInput) nameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") doConfirm(); });
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+          showIdentityModal = false;
+          identityModalError = "";
+          pendingOpenLeagueAfterIdentity = false;
+          render();
+        });
+      }
+      if (overlay) {
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) {
+            showIdentityModal = false;
+            identityModalError = "";
+            pendingOpenLeagueAfterIdentity = false;
+            render();
+          }
+        });
+      }
+    }
+
+    if (showAdminPlayerModal) {
+      const overlay = document.getElementById("admin-player-modal-overlay");
+      const nameInput = document.getElementById("admin-player-name-input");
+      const cancelBtn = document.getElementById("admin-player-cancel-btn");
+      const saveBtnAdmin = document.getElementById("admin-player-save-btn");
+      const deleteBtnAdmin = document.getElementById("admin-player-delete-btn");
+      if (nameInput) nameInput.focus();
+      const doSave = () => saveAdminPlayerRename(nameInput ? nameInput.value : "");
+      if (saveBtnAdmin) saveBtnAdmin.addEventListener("click", doSave);
+      if (nameInput) nameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") doSave(); });
+      if (deleteBtnAdmin) deleteBtnAdmin.addEventListener("click", deleteAdminPlayer);
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+          showAdminPlayerModal = false;
+          adminPlayerModalTarget = null;
+          adminPlayerModalError = "";
+          render();
+        });
+      }
+      if (overlay) {
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) {
+            showAdminPlayerModal = false;
+            adminPlayerModalTarget = null;
+            adminPlayerModalError = "";
+            render();
+          }
+        });
+      }
+    }
+
+    if (showAdminGroupModal) {
+      const overlay = document.getElementById("admin-group-modal-overlay");
+      const nameInput = document.getElementById("admin-group-name-input");
+      const cancelBtn = document.getElementById("admin-group-cancel-btn");
+      const saveBtnAdminGroup = document.getElementById("admin-group-save-btn");
+      const deleteBtnAdminGroup = document.getElementById("admin-group-delete-btn");
+      if (nameInput) nameInput.focus();
+      const doSaveGroup = () => saveAdminGroupRename(nameInput ? nameInput.value : "");
+      if (saveBtnAdminGroup) saveBtnAdminGroup.addEventListener("click", doSaveGroup);
+      if (nameInput) nameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") doSaveGroup(); });
+      if (deleteBtnAdminGroup) deleteBtnAdminGroup.addEventListener("click", deleteAdminGroup);
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+          showAdminGroupModal = false;
+          adminGroupModalTarget = null;
+          adminGroupModalError = "";
+          render();
+        });
+      }
+      if (overlay) {
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) {
+            showAdminGroupModal = false;
+            adminGroupModalTarget = null;
+            adminGroupModalError = "";
+            render();
+          }
+        });
+      }
+    }
+
+    const saveBtn = document.getElementById("save-btn");
+    if (saveBtn) saveBtn.addEventListener("click", saveAll);
+
+    const adminBtn = document.getElementById("admin-btn");
+    if (adminBtn) {
+      adminBtn.addEventListener("click", () => {
+        if (isAdmin) {
+          isAdmin = false;
+          render();
+        } else {
+          requestAdminLogin();
+        }
+      });
+    }
+
+    if (showAdminModal) {
+      const overlay = document.getElementById("admin-modal-overlay");
+      const passInput = document.getElementById("admin-pass-input");
+      const cancelBtn = document.getElementById("admin-cancel-btn");
+      const confirmBtn = document.getElementById("admin-confirm-btn");
+
+      if (passInput) passInput.focus();
+
+      const tryLogin = () => {
+        const val = passInput ? passInput.value : "";
+        if (val === ADMIN_PASSWORD) {
+          isAdmin = true;
+          showAdminModal = false;
+          adminError = "";
+          render();
+        } else {
+          adminError = "Rangt lykilorð, reyndu aftur.";
+          render();
+        }
+      };
+
+      if (confirmBtn) confirmBtn.addEventListener("click", tryLogin);
+      if (passInput) {
+        passInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") tryLogin();
+        });
+      }
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+          showAdminModal = false;
+          adminError = "";
+          render();
+        });
+      }
+      if (overlay) {
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) {
+            showAdminModal = false;
+            adminError = "";
+            render();
+          }
+        });
+      }
+    }
+
+    flashRow = null;
+  }
+
+  async function init() {
+    // Bíður eftir innskráningu (Supabase Auth) áður en leikurinn er sóttur.
+    // window.__ensureSignedIn birtir innskráningarskjá í #root ef þörf er á
+    // og skilar false - init() keyrir þá aftur sjálfkrafa eftir innskráningu.
+    if (window.__ensureSignedIn) {
+      const signedIn = await window.__ensureSignedIn(root);
+      if (!signedIn) return;
+    }
+    root.innerHTML = '<div class="wrap"><div class="court-bg"><p class="loading">Sæki spá&hellip;</p></div></div>';
+    await loadAll();
+    render();
+    setInterval(() => {
+      if (activeTab === "leg1" || activeTab === "leg2" || activeTab === "phase1" || activeTab === "phase2") render();
+      if (activeTab === "pool" && league.code) fetchLeaderboard(league.code);
+    }, 60000);
+  }
+
+  window.__gameInit = init;
+  init();
+})();
+</script>
+</body>
+</html>
