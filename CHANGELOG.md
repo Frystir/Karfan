@@ -13,6 +13,32 @@ Snið á hverri færslu:
 
 ---
 
+## v1.28.2 — 2026-09-24
+- Lagfært: við ósk um "gleymt lykilorð" fór notandi stundum beint inn í
+  appið sjálft í stað þess að sjá skjáinn til að setja nýtt lykilorð —
+  gerðist einkum ef notandinn var þegar innskráður í sama vafra.
+- Orsök: kapphlaup (race condition) milli tveggja Supabase-atburða —
+  `SIGNED_IN` (samstundis, af geymdri innskráningu) og `PASSWORD_RECOVERY`
+  (ósamstillt, kemur aðeins seinna). Þegar `SIGNED_IN` var afgreitt á undan
+  hélt appið að notandinn ætti bara að fara inn í leikinn, áður en
+  `PASSWORD_RECOVERY`-atburðurinn náði að setja rétta stöðu.
+- Lagað með því að greina `type=recovery` beint úr vefslóðinni (samstundis,
+  strax við ræsingu síðunnar) í stað þess að reiða sig eingöngu á
+  ósamstillta Supabase-atburðinn. Þannig veit appið um leið og síðan opnast
+  að um lykilorðs-endurheimt sé að ræða, óháð því í hvaða röð Supabase
+  atburðirnir berast.
+- Eftir að nýtt lykilorð er staðfest er `type=recovery` fjarlægt úr
+  vefslóðinni, svo endurhleðsla á síðunni eftir það fari ekki aftur í
+  endurheimtar-ham.
+
+## v1.28.1 — 2026-09-24
+- Útgáfumerkið var of ósýnilegt (dauft, neðst t.v. yfir alla síðuna) — bætt
+  við skýrri, sýnilegri útgáfumerkingu (`v1.28.1`) inni í sjálfum
+  hnappa­röðinni (við hliðina á "Skrá út") á aðalskjá leiksins, stíluð eins
+  og hinir hnapparnir svo hún týnist ekki.
+- Gamla, dauflega merkið neðst t.v. fær að halda sér óbreytt (birtist líka á
+  innskráningarskjá), en nýja merkið er það sem sést best í sjálfum leiknum.
+
 ## v1.27.1 — 2026-09-23 / uppfært 2026-09-24
 - v1.28 reyndist bilað og var lagt til hliðar (ekki notað áfram).
 - Byggt ofan á síðustu virku útgáfu (v1.27): sama útgáfumerking og í v1.28
