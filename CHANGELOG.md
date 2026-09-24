@@ -13,14 +13,22 @@ Snið á hverri færslu:
 
 ---
 
-## v1.27.1 — 2026-09-23
+## v1.27.1 — 2026-09-23 / uppfært 2026-09-24
 - v1.28 reyndist bilað og var lagt til hliðar (ekki notað áfram).
 - Byggt ofan á síðustu virku útgáfu (v1.27): sama útgáfumerking og í v1.28
   (`APP_VERSION` / `APP_VERSION_DATE`, útgáfumerki neðst t.v., `console.log`
   við ræsingu) sett inn í `bonusdeild_giskleikur_v1_27_1.html`.
-- ATH: kannaðu hvað nákvæmlega var öðruvísi í v1.28 (sem virkaði ekki) svo
-  þær breytingar glatist ekki — þessi útgáfa er v1.27 + útgáfumerking, ekkert
-  annað úr v1.28 er innifalið.
+- Borið saman v1.27 og v1.28 í smáatriðum (diff): eini munurinn reyndist
+  vera nafnabreytingin úr "Bónusdeild karla / Bónusdeild giskleikur" yfir í
+  "Brakið" — hvergi notuð forritunarlega, eingöngu birt sem `<title>` og á
+  innskráningarskjá. Engin önnur virkni eða kóði var öðruvísi milli
+  útgáfnanna tveggja.
+- 2026-09-24: "Brakið"-nafnið því sett aftur inn í v1.27.1 (síðuheiti og
+  fyrirsögn á innskráningarskjá), þar sem sú breyting reyndist alveg örugg
+  og ótengd því sem klikkaði í v1.28.
+- ATH: af því v1.27 og v1.28 voru annars orðrétt eins liggur núverandi
+  "bilun" ekki í sjálfum kóðanum í þessari skrá — hún er líklega í hýsingu,
+  skyndiminni í vafra, eða Supabase-ástandi frekar en í frumkóðanum sjálfum.
 
 ## v1.28.0 — 2026-09-22 (BILAÐ — ekki í notkun)
 - Bætt við útgáfumerkingu: `APP_VERSION` / `APP_VERSION_DATE` fremst í
