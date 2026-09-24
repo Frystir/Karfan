@@ -13,6 +13,19 @@ Snið á hverri færslu:
 
 ---
 
+## v1.29.0 — 2026-09-24
+- Ný eiginleiki: hægt að sjá giskanir annarra í hópnum, umferð fyrir umferð.
+- Í hverjum umferðarflipa ("Leikir 1–11" o.s.frv.) birtist hnappurinn „Sjá
+  giskanir hópsins" um leið og umferðin læsist (60 mín. fyrir fyrsta leik) —
+  aldrei fyrr, svo enginn geti afritað spár annarra áður en umferð lokast.
+- Við að opna hnappinn sést, fyrir hvern leik í umferðinni, hvaða lið hver
+  leikmaður í hópnum valdi (nafn birtist undir liðinu sem viðkomandi
+  giskaði á), og hvort það reyndist rétt eða rangt um leið og úrslit eru
+  skráð (grænn/rauður litur).
+- Notar gögn sem appið sótti nú þegar til að reikna út hópstöðuna í
+  „Hópurinn"-flipanum — engin ný fyrirspurn í gagnagrunninn.
+- Aðeins sýnilegt þeim sem eru skráðir í hóp (ekki í einkaham).
+
 ## v1.28.2 — 2026-09-24
 - Lagfært: við ósk um "gleymt lykilorð" fór notandi stundum beint inn í
   appið sjálft í stað þess að sjá skjáinn til að setja nýtt lykilorð —
