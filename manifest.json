@@ -1,0 +1,17 @@
+{
+  "name": "Brakið — giskleikur",
+  "short_name": "Brakið",
+  "description": "Giskleikur fyrir Bónusdeild karla. Spáðu fyrir úrslitum og keppdu við vini þína í eigin hóp.",
+  "lang": "is",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#101318",
+  "theme_color": "#101318",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
