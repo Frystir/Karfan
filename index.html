@@ -681,7 +681,7 @@
 // dreift. Birtist sem lítið merki neðst t.v. og í console.log, svo hægt
 // sé að sjá strax hvaða útgáfu notandi er með (t.d. við villuleit).
 // Halda í takt við git tag (t.d. "git tag v1.28.0") og CHANGELOG.md.
-const APP_VERSION = "1.43.0";
+const APP_VERSION = "1.44.0";
 const APP_VERSION_DATE = "2026-10-21";
 
 // Netfang sem notendur geta haft samband við, t.d. ef þeir komast ekki inn til að eyða aðgangi.
@@ -2054,13 +2054,47 @@ const SCHEDULE = {
     }
   }
 
+  // Ef fyrirliði er fjarlægður úr hóp færist fyrirliðahlutverkið á þann leikmann
+  // sem vistaði giskun síðast (virkasta leikmanninn). Enginn eftir = enginn fyrirliði.
+  // Sama regla og í delete_my_account() í supabase_eyda_adgangi.sql.
+  async function transferCaptainIfNeeded(code, removedSlug) {
+    const info = await fetchGroupInfo(code);
+    if (!info || info.captainSlug !== removedSlug) return null;
+    let best = null;
+    try {
+      const prefix = leaguePlayerPrefix(code);
+      const listRes = await window.storage.list(prefix, true);
+      for (const k of ((listRes && listRes.keys) || [])) {
+        const slug = k.slice(prefix.length);
+        if (slug === removedSlug) continue;
+        let parsed = {};
+        try { const r = await window.storage.get(k, true); parsed = r && r.value ? JSON.parse(r.value) : {}; } catch (e) { /* hunsa */ }
+        const savedAt = typeof parsed.savedAt === "number" ? parsed.savedAt : -1;
+        if (!best || savedAt > best.savedAt || (savedAt === best.savedAt && slug < best.slug)) {
+          best = { slug, name: parsed.playerName || slug, savedAt };
+        }
+      }
+    } catch (e) { return null; }
+    const next = Object.assign({}, info, {
+      captainSlug: best ? best.slug : null,
+      captainName: best ? best.name : null,
+      updatedAt: Date.now()
+    });
+    await saveGroupInfo(code, next);
+    groupInfoCache[code] = next;
+    syncLeagueCaptain(code);
+    return best;
+  }
+
   async function kickMember() {
     const target = memberModalTarget;
     if (!target) { showMemberModal = false; render(); return; }
     try { await window.storage.delete(target.key, true); } catch (e) { /* hunsa */ }
+    const newCaptain = await transferCaptainIfNeeded(target.code, target.slug);
     showMemberModal = false;
     memberModalTarget = null;
-    statusMsg = "\u201e" + target.name + "\u201c var fjarlægð(ur) úr hópnum. Getur gengið í hópinn aftur með aðgangslyklinum.";
+    statusMsg = "\u201e" + target.name + "\u201c var fjarlægð(ur) úr hópnum. Getur gengið í hópinn aftur með aðgangslyklinum."
+      + (newCaptain ? " \u201e" + newCaptain.name + "\u201c er nú fyrirliði hópsins." : "");
     refreshAfterMemberChange();
   }
 
@@ -2068,6 +2102,7 @@ const SCHEDULE = {
     const target = memberModalTarget;
     if (!target) { showMemberModal = false; render(); return; }
     try { await window.storage.delete(target.key, true); } catch (e) { /* hunsa */ }
+    const newCaptain = await transferCaptainIfNeeded(target.code, target.slug);
     const info = (await fetchGroupInfo(target.code)) || { name: target.code, code: target.code };
     const banned = Array.isArray(info.banned) ? info.banned.slice() : [];
     if (!banned.some(b => b.slug === target.slug)) banned.push({ slug: target.slug, name: target.name });
@@ -2075,7 +2110,7 @@ const SCHEDULE = {
     await saveGroupInfo(target.code, info);
     showMemberModal = false;
     memberModalTarget = null;
-    statusMsg = "\u201e" + target.name + "\u201c var bannaður aðgangur að hópnum.";
+    statusMsg = "\u201e" + target.name + "\u201c var bannaður aðgangur að hópnum." + (newCaptain ? " \u201e" + newCaptain.name + "\u201c er nú fyrirliði hópsins." : "");
     refreshAfterMemberChange();
   }
 
@@ -2834,7 +2869,7 @@ const SCHEDULE = {
             <li>nafni þínu og hópalista,</li>
             <li>skilaboðum sem þú hefur sent í spjalli.</li>
           </ul>
-          <p class="modal-sub" style="margin-bottom:10px;">Hópar sem þú stofnaðir halda áfram að vera til fyrir hina í hópnum. <strong>Ekki er hægt að afturkalla eyðinguna.</strong></p>
+          <p class="modal-sub" style="margin-bottom:10px;">Hópar sem þú stofnaðir halda áfram að vera til fyrir hina í hópnum. Ef þú ert fyrirliði færist hlutverkið sjálfkrafa á þann leikmann sem vistaði giskun síðast. <strong>Ekki er hægt að afturkalla eyðinguna.</strong></p>
           <label class="admin-only-note" for="delete-account-confirm" style="display:block; margin:0 0 4px;">Skrifaðu <strong>EYÐA</strong> til að staðfesta:</label>
           <input type="text" class="modal-input" id="delete-account-confirm" autocomplete="off" value="${escapeHtml(st.confirm)}" ${st.busy ? "disabled" : ""} />
           ${st.error ? `<p class="modal-error">${escapeHtml(st.error)}</p>` : ""}
@@ -2964,7 +2999,7 @@ const SCHEDULE = {
           <h3>Hópar og spjall</h3>
           <ul>
             <li>Stofnaðu hóp og deildu 5 stafa aðgangslyklinum, eða gakktu í hóp með lykli frá fyrirliða.</li>
-            <li>Fyrirliði getur breytt nöfnum, rekið eða bannað leikmenn í sínum hóp.</li>
+            <li>Fyrirliði getur breytt nöfnum, rekið eða bannað leikmenn í sínum hóp. Ef fyrirliði hættir (eyðir aðgangi eða er fjarlægður) færist hlutverkið sjálfkrafa á þann leikmann sem vistaði giskun síðast.</li>
             <li>Í <em>Spjall</em> geturðu skrifast á við aðra í hópnum. Aðeins meðlimir hópsins sjá skilaboðin.</li>
           </ul>
 
@@ -3150,6 +3185,8 @@ const SCHEDULE = {
     try {
       await window.storage.delete(target.key, true);
     } catch (e) { /* hunsa */ }
+    const newCaptain = await transferCaptainIfNeeded(target.code, target.slug);
+    if (newCaptain) showToast("\u201e" + newCaptain.name + "\u201c er nú fyrirliði hópsins.", false);
     showAdminPlayerModal = false;
     adminPlayerModalTarget = null;
     allPlayersAdminState = { status: "idle", groups: [], error: "" };
@@ -4119,6 +4156,18 @@ const SCHEDULE = {
     const n = roundNumberForKey(li.roundKey);
     return "þegar " + n + ". umferð byrjar" + (li.source === "group" ? " \u2013 fyrsta umferð eftir að hópurinn var stofnaður" : "");
   }
+  // Uppfærir fyrirliða núverandi hóps ef hann hefur breyst (t.d. fyrri fyrirliði eyddi aðgangi sínum)
+  function syncLeagueCaptain(code) {
+    const info = groupInfoCache[code];
+    if (!info || league.code !== code || !("captainSlug" in info)) return false;
+    const cs = info.captainSlug || null;
+    if ((league.captainSlug || null) === cs) return false;
+    league = Object.assign({}, league, { captainSlug: cs });
+    saveMembership();
+    if (cs && cs === identity.slug) showToast("Þú ert nú fyrirliði hópsins \u201e" + (league.name || code) + "\u201c.", false);
+    return true;
+  }
+
   function ensureGroupInfo(code) {
     if (!code || code in groupInfoCache || groupInfoLoading[code]) return;
     groupInfoLoading[code] = true;
@@ -4126,6 +4175,7 @@ const SCHEDULE = {
       groupInfoLoading[code] = false;
       const had = code in groupInfoCache;
       groupInfoCache[code] = info || null;
+      if (syncLeagueCaptain(code)) { render(); return; }
       if (!had && league.code === code) render();
     });
   }
@@ -4134,6 +4184,7 @@ const SCHEDULE = {
     const info = await fetchGroupInfo(code);
     const changed = JSON.stringify(groupInfoCache[code] || null) !== JSON.stringify(info || null);
     groupInfoCache[code] = info || null;
+    if (syncLeagueCaptain(code)) { render(); return; }
     if (changed && league.code === code && (activeTab === "phase1" || activeTab === "phase2" || activeTab === "extra")) render();
   }
 
