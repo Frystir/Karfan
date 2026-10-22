@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persónuverndarstefna — Brakið</title>
+<meta name="description" content="Persónuverndarstefna Brakið, giskleiks fyrir Bónusdeild karla: hvaða gögn eru geymd, hvers vegna, hver sér þau og hvernig þú eyðir þeim.">
+<meta name="theme-color" content="#101318">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+  :root {
+    --bg: #EFEAE0; --surface: #FFFFFF; --line: #DAD3C2; --text: #22201B; --muted: #6B6558;
+    --accent: #E85D2C; --teal: #2E8676;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #101318; --surface: #1A1F27; --line: #2C333D; --text: #F1EEE6; --muted: #8A93A3; --accent: #FF6A3D; --teal: #46A895; }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 16px 56px; }
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  header img { width: 48px; height: 48px; border-radius: 12px; }
+  h1 { font-size: 1.7rem; line-height: 1.2; margin: 0; }
+  .lead { color: var(--muted); margin: 6px 0 24px; }
+  h2 { font-size: 1.1rem; margin: 32px 0 8px; color: var(--teal); }
+  p, li { margin: 0 0 10px; }
+  ul { padding-left: 1.2rem; margin: 0 0 12px; }
+  a { color: var(--accent); }
+  .box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 16px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.94rem; margin: 8px 0 12px; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: 0.85rem; }
+  .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  footer { margin-top: 40px; color: var(--muted); font-size: 0.9rem; }
+  .back { display: inline-block; margin-top: 18px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="icon-192.png" alt="">
+    <h1>Persónuverndarstefna Brakið</h1>
+  </header>
+  <p class="lead">Síðast uppfært 22. október 2026</p>
+
+  <div class="box">
+    <strong>Í stuttu máli:</strong> Brakið er giskleikur fyrir Bónusdeild karla í körfubolta. Við geymum aðeins það sem þarf til að leikurinn virki: netfangið þitt, nafnið sem þú velur, giskanir þínar, hópana þína og skilaboð í spjalli. Við seljum engin gögn, birtum engar auglýsingar og notum enga rakningu. Þú getur eytt aðganginum þínum og öllum gögnum hvenær sem er.
+  </div>
+
+  <h2>1. Hver ber ábyrgð á gögnunum</h2>
+  <p>Ábyrgðaraðili er rekstraraðili Brakið, <strong>Árni Arnarson</strong>, Íslandi. Fyrirspurnir og beiðnir um persónuvernd sendast á <a href="mailto:brakarinn@gmail.com">brakarinn@gmail.com</a>.</p>
+
+  <h2>2. Hvaða gögn eru geymd og hvers vegna</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Gögn</th><th>Tilgangur</th><th>Lagagrundvöllur</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Netfang og lykilorð</strong> (lykilorðið er geymt dulkóðað/hakkað, aldrei í læsilegu formi)</td><td>Innskráning, endurstilling lykilorðs</td><td>Til að efna samning um notkun leiksins</td></tr>
+      <tr><td><strong>Birtingarnafn</strong> sem þú velur</td><td>Sýnt öðrum í hópunum þínum í stöðutöflu, giskunum og spjalli</td><td>Til að efna samning</td></tr>
+      <tr><td><strong>Hópaaðild</strong> (hvaða hópum þú tilheyrir, hvort þú ert fyrirliði)</td><td>Að leikurinn virki í hópum</td><td>Til að efna samning</td></tr>
+      <tr><td><strong>Giskanir og stig</strong> (leikjagiskanir, aukaspár, stöðuspár, aukastig) og hvenær þær voru vistaðar</td><td>Að reikna stig og stöðu</td><td>Til að efna samning</td></tr>
+      <tr><td><strong>Spjallskilaboð</strong> sem þú sendir í hóp</td><td>Spjall milli meðlima hópsins</td><td>Til að efna samning</td></tr>
+      <tr><td><strong>Tilkynningaáskrift</strong> (auðkenni tækis hjá push-þjónustu, dulkóðunarlyklar, gerð vafra og stillingar þínar)</td><td>Að senda tilkynningar sem þú baðst um</td><td>Samþykki þitt – þú getur afturkallað það hvenær sem er undir <em>Tilkynningar</em></td></tr>
+      <tr><td><strong>Tæknigögn</strong> (t.d. IP-tala og tímasetning innskráninga í kerfisskrám)</td><td>Öryggi og villuleit</td><td>Lögmætir hagsmunir af öruggum rekstri</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Við söfnum <strong>ekki</strong> staðsetningu, tengiliðum, myndum, greiðsluupplýsingum eða neinum gögnum um notkun þína utan leiksins.</p>
+
+  <h2>3. Hver sér gögnin þín</h2>
+  <ul>
+    <li><strong>Aðrir í hópnum þínum</strong> sjá birtingarnafnið þitt, stigin þín, spjallskilaboðin þín og giskanir þínar <em>eftir að viðkomandi umferð hefur lokast</em>.</li>
+    <li><strong>Fyrirliði hópsins</strong> getur breytt nafni þínu í hópnum, fjarlægt þig úr hópnum eða eytt skilaboðum í spjalli hópsins.</li>
+    <li><strong>Stjórnendur leiksins</strong> hafa aðgang að öllum gögnum til að reka leikinn, þar á meðal netföngum og giskunum áður en umferðir lokast. Þeir nota þann aðgang eingöngu til reksturs og aðstoðar.</li>
+    <li>Engum öðrum eru afhent gögn, nema okkur beri skylda til þess samkvæmt lögum.</li>
+  </ul>
+
+  <h2>4. Vinnsluaðilar og þjónustur þriðja aðila</h2>
+  <p>Til að reka leikinn notum við eftirfarandi þjónustur. Þær vinna aðeins með gögn í þeim tilgangi að veita okkur þjónustuna:</p>
+  <ul>
+    <li><strong>Supabase</strong> – gagnagrunnur, innskráning og sjálfvirk föll (edge functions) sem senda tilkynningar. Þar eru öll gögnin í kafla 2 geymd. Ef gögn eru vistuð utan Evrópska efnahagssvæðisins byggir flutningurinn á stöðluðum samningsákvæðum framkvæmdastjórnar ESB.</li>
+    <li><strong>Push-þjónustur</strong> vafra og stýrikerfa (t.d. Google, Mozilla, Apple) – koma tilkynningum til tækisins þíns ef þú kveikir á þeim. Innihald tilkynninga er dulkóðað á leiðinni.</li>
+    <li><strong>Vefhýsing</strong> – hýsir sjálfa vefsíðu leiksins.</li>
+    <li><strong>Google Fonts</strong> og <strong>jsDelivr</strong> – letur og forritasöfn sem síðan sækir. Þessar þjónustur fá IP-tölu þína þegar síðan hleðst, eins og við á um flestar vefsíður.</li>
+  </ul>
+  <p>Við notum <strong>engar</strong> auglýsingaþjónustur, greiningartól (analytics) eða rakningarkökur.</p>
+
+  <h2>5. Geymsla í tækinu þínu</h2>
+  <p>Leikurinn vistar smávægilegar stillingar í vafranum þínum (localStorage), t.d. hvort þú notar ljóst eða dökkt þema, hvenær þú last spjallið síðast og giskanir ef þú spilar án hóps. Þetta fer ekki til okkar og er eingöngu til þæginda. Þú getur hreinsað það með því að eyða vefgögnum síðunnar í vafranum.</p>
+
+  <h2>6. Hversu lengi gögnin eru geymd</h2>
+  <ul>
+    <li>Aðgangsgögn, giskanir og hópaaðild eru geymd á meðan aðgangurinn þinn er til.</li>
+    <li>Spjallskilaboð eru geymd þar til þú, fyrirliði eða stjórnandi eyðir þeim, eða þar til aðgangi þínum er eytt.</li>
+    <li>Tilkynningaáskrift er eytt þegar þú slekkur á tilkynningum, skráir þig út eða eyðir aðgangi, og sjálfkrafa ef push-þjónustan tilkynnir að tækið sé ekki lengur virkt.</li>
+    <li>Þegar aðgangi er eytt hverfa gögnin úr virkum gagnagrunni strax. Öryggisafrit hjá Supabase geta geymt þau í takmarkaðan tíma eftir það, samkvæmt afritunarferli Supabase.</li>
+  </ul>
+
+  <h2>7. Að eyða aðgangi og gögnum</h2>
+  <p>Þú getur eytt aðganginum þínum og öllum gögnum sem honum fylgja hvenær sem er:</p>
+  <ul>
+    <li><strong>Í leiknum:</strong> ýttu á <em>Eyða aðgangi</em> neðst á síðunni.</li>
+    <li><strong>Á vefnum:</strong> opnaðu <a href="./#eyda-adgangi">eyðingarsíðuna</a>, skráðu þig inn og staðfestu.</li>
+    <li><strong>Með tölvupósti:</strong> ef þú kemst ekki inn, sendu beiðni á <a href="mailto:brakarinn@gmail.com?subject=Ey%C3%B0a%20a%C3%B0gangi%20%C3%AD%20Braki%C3%B0">brakarinn@gmail.com</a> frá netfanginu sem aðgangurinn er skráður á.</li>
+  </ul>
+  <p>Eyðingin fjarlægir innskráninguna, nafnið, giskanir og stig í öllum hópum, hópalistann, spjallskilaboð og tilkynningaáskriftir. Hópar sem þú stofnaðir halda áfram að vera til fyrir aðra meðlimi.</p>
+
+  <h2>8. Réttindi þín</h2>
+  <p>Samkvæmt persónuverndarlögum (lögum nr. 90/2018 og almennu persónuverndarreglugerðinni, GDPR) átt þú rétt á að:</p>
+  <ul>
+    <li>fá upplýsingar um og afrit af þeim gögnum sem við geymum um þig,</li>
+    <li>fá röng gögn leiðrétt (nafni geturðu breytt sjálf(ur) með <em>Breyta nafni</em>),</li>
+    <li>fá gögnum eytt (sjá kafla 7),</li>
+    <li>andmæla eða takmarka vinnslu og fá gögn afhent á tölvutæku formi,</li>
+    <li>afturkalla samþykki fyrir tilkynningum hvenær sem er.</li>
+  </ul>
+  <p>Sendu beiðni á <a href="mailto:brakarinn@gmail.com">brakarinn@gmail.com</a>. Við svörum innan eins mánaðar. Þú getur einnig kvartað til <a href="https://www.personuvernd.is" rel="noopener">Persónuverndar</a> ef þú telur vinnsluna ekki í samræmi við lög.</p>
+
+  <h2>9. Öryggi</h2>
+  <p>Öll samskipti við leikinn fara um dulkóðaða tengingu (HTTPS). Lykilorð eru geymd hökkuð. Aðgangsstýring í gagnagrunninum tryggir að spjall hóps sjá aðeins meðlimir hans og að enginn geti skrifað í nafni annars. Tilkynningar eru dulkóðaðar frá okkur til tækisins.</p>
+
+  <h2>10. Börn</h2>
+  <p>Leikurinn er ekki ætlaður börnum yngri en 13 ára. Ef okkur verður ljóst að barn undir 13 ára aldri hafi stofnað aðgang án samþykkis forráðamanns eyðum við honum.</p>
+
+  <h2>11. Breytingar á stefnunni</h2>
+  <p>Ef við breytum þessari stefnu uppfærum við dagsetninguna efst. Ef breytingarnar eru verulegar látum við vita í leiknum.</p>
+
+  <footer>
+    Brakið — giskleikur fyrir Bónusdeild karla · <a href="mailto:brakarinn@gmail.com">brakarinn@gmail.com</a>
+    <br><a class="back" href="./">← Til baka í leikinn</a>
+  </footer>
+</main>
+</body>
+</html>

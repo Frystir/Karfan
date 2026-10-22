@@ -687,14 +687,16 @@
 // dreift. Birtist sem lítið merki neðst t.v. og í console.log, svo hægt
 // sé að sjá strax hvaða útgáfu notandi er með (t.d. við villuleit).
 // Halda í takt við git tag (t.d. "git tag v1.28.0") og CHANGELOG.md.
-const APP_VERSION = "1.45.2";
-const APP_VERSION_DATE = "2026-10-21";
+const APP_VERSION = "1.46.0";
+const APP_VERSION_DATE = "2026-10-22";
 
 // Netfang sem notendur geta haft samband við, t.d. ef þeir komast ekki inn til að eyða aðgangi.
 // Birtist á innskráningarskjá (slóðin ...#eyda-adgangi) og í glugganum "Eyða aðgangi". Autt = ekki birt.
 const SUPPORT_EMAIL = "brakarinn@gmail.com";
 // Slóðin sem vísað er á í Google Play til að biðja um eyðingu aðgangs: <slóð appsins>#eyda-adgangi
 const DELETE_ACCOUNT_HASH = "#eyda-adgangi";
+// Persónuverndarstefnan er sér síða við hlið index.html (opinber slóð fyrir Google Play / App Store)
+const PRIVACY_URL = "personuvernd.html";
 // Opinber VAPID-lykill fyrir tilkynningar (push). Sami lykill og VAPID_PUBLIC_KEY í edge-fallinu "push".
 // Autt = tilkynningar ekki virkar (hnappurinn útskýrir það).
 const VAPID_PUBLIC_KEY = "BHI_PPqhigmY71WxoJCPSwOuzS_dvX97x2j9oyvOD60J_-rU7Atjd9FVUOpKwr0Uvr1nqT8sUSpnI1Ab-FcVrZM";
@@ -889,6 +891,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         ? '<button type="button" class="btn-link" id="auth-back-to-signin-btn" style="margin-top:10px;">Til baka í innskráningu</button>'
         : (authMode === "signin" ? '<button type="button" class="btn-link" id="auth-forgot-btn" style="margin-top:10px;">Gleymt lykilorð?</button>' : '')) +
       '<p id="auth-status" class="pool-note"></p>' +
+      '<p style="margin:14px 0 0; font-size:11.5px; color:var(--text-muted);">Með því að skrá þig inn samþykkir þú <a href="' + PRIVACY_URL + '" target="_blank" rel="noopener" style="color:var(--rim);">persónuverndarstefnu</a> leiksins.</p>' +
       '<button type="button" class="btn-link" id="auth-theme-toggle-btn" style="margin-top:6px;">' +
       (window.__isLightMode && window.__isLightMode() ? "Dökkt þema" : "Ljóst þema") + '</button>' +
       '</div></div>';
@@ -1283,6 +1286,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
   let showRulesModal = false;
   let showDeleteAccountModal = false;
   let showNotifModal = false;
+  let showPrivacyModal = false;
   let notifState = { status: "checking", prefs: { rounds: true, chat: true }, busy: false, error: "", msg: "" };
   let deleteAccountState = { busy: false, error: "", confirm: "" };
   let copyState = { status: "idle", groups: [], from: "", to: "", includeLocked: false, error: "", msg: "", busy: false };
@@ -2881,7 +2885,7 @@ const SCHEDULE = {
             <li>nafni þínu og hópalista,</li>
             <li>skilaboðum sem þú hefur sent í spjalli.</li>
           </ul>
-          <p class="modal-sub" style="margin-bottom:10px;">Hópar sem þú stofnaðir halda áfram að vera til fyrir hina í hópnum. Ef þú ert fyrirliði færist hlutverkið sjálfkrafa á þann leikmann sem vistaði giskun síðast. <strong>Ekki er hægt að afturkalla eyðinguna.</strong></p>
+          <p class="modal-sub" style="margin-bottom:10px;">Sjá nánar í <a href="${PRIVACY_URL}" target="_blank" rel="noopener" style="color:var(--rim);">persónuverndarstefnu</a>. Hópar sem þú stofnaðir halda áfram að vera til fyrir hina í hópnum. Ef þú ert fyrirliði færist hlutverkið sjálfkrafa á þann leikmann sem vistaði giskun síðast. <strong>Ekki er hægt að afturkalla eyðinguna.</strong></p>
           <label class="admin-only-note" for="delete-account-confirm" style="display:block; margin:0 0 4px;">Skrifaðu <strong>EYÐA</strong> til að staðfesta:</label>
           <input type="text" class="modal-input" id="delete-account-confirm" autocomplete="off" value="${escapeHtml(st.confirm)}" ${st.busy ? "disabled" : ""} />
           ${st.error ? `<p class="modal-error">${escapeHtml(st.error)}</p>` : ""}
@@ -3081,7 +3085,10 @@ const SCHEDULE = {
       if (!res.ok) throw new Error(out.error || ("Villa " + res.status + " — er edge-fallið „push“ uppsett?"));
       notifState.msg = out.sent ? "Prufutilkynning send — hún ætti að birtast eftir augnablik." : "Engin tilkynning send (" + JSON.stringify(out) + ").";
     } catch (e) {
-      notifState.error = "Prufa tókst ekki: " + ((e && e.message) || "óþekkt villa");
+      const m = (e && e.message) || "";
+      notifState.error = /Failed to fetch|NetworkError|Load failed/i.test(m)
+        ? "Náði ekki sambandi við edge-fallið \u201epush\u201c. Algengustu ástæður: fallið er ekki uppsett, heitir ekki \u201epush\u201c, eða kveikt er á \u201eVerify JWT\u201c. Opnaðu " + SUPABASE_URL + "/functions/v1/push í vafra til að sjá stöðuna."
+        : "Prufa tókst ekki: " + (m || "óþekkt villa");
     }
     notifState.busy = false;
     render();
@@ -3149,6 +3156,22 @@ const SCHEDULE = {
     activeTab = m[1];
     try { history.replaceState(null, "", window.location.pathname + window.location.search); } catch (e) { /* hunsa */ }
     return true;
+  }
+
+  function renderPrivacyModalHtml() {
+    return `
+      <div class="modal-overlay" id="privacy-modal-overlay">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="privacy-title" style="max-width:640px; width:100%; padding:14px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px;">
+            <p class="modal-title" id="privacy-title" style="margin:0;">Persónuvernd</p>
+            <a href="${PRIVACY_URL}" target="_blank" rel="noopener" class="btn-link" style="font-size:11px;">Opna í nýjum glugga</a>
+          </div>
+          <iframe src="${PRIVACY_URL}" title="Persónuverndarstefna" style="width:100%; height:min(70vh, 640px); border:1px solid var(--line); border-radius:10px; background:var(--bg);"></iframe>
+          <div class="modal-actions" style="margin-top:10px;">
+            <button class="btn btn-primary" id="privacy-close-btn" type="button">Loka</button>
+          </div>
+        </div>
+      </div>`;
   }
 
   function renderRulesModalHtml() {
@@ -3227,6 +3250,7 @@ const SCHEDULE = {
           <h3>Aðgangurinn þinn</h3>
           <ul>
             <li>Þú getur eytt aðganginum þínum og öllum gögnum hvenær sem er með hnappnum <em>Eyða aðgangi</em> neðst á síðunni, eða með því að opna slóð leiksins með <code>${DELETE_ACCOUNT_HASH}</code> aftast.</li>
+            <li>Hvaða gögn eru geymd og hver sér þau: <a href="${PRIVACY_URL}" class="privacy-open-btn" style="color:var(--rim);">persónuverndarstefna</a>.</li>
           </ul>
 
           <div class="modal-actions" style="margin-top:16px;">
@@ -4806,6 +4830,7 @@ const SCHEDULE = {
             ${!isScoreTab && !isLeagueTab && !isPoolTab && !isAdminTab && !isAdminPicksTab && !isChatTab ? `<button class="btn btn-primary" id="save-btn">Vista allt</button>` : ""}
             ${isPhaseTab && !phaseLocked ? `<button class="btn btn-secondary" id="reset-btn">Byrja þennan flipa upp á nýtt</button>` : ""}
             <button class="btn btn-secondary" id="change-password-btn">Breyta lykilorði</button>
+            <button class="btn btn-secondary privacy-open-btn" type="button">Persónuvernd</button>
             ${window.__supabaseClient ? `<button class="btn btn-secondary" id="delete-account-btn" style="color:var(--danger);">Eyða aðgangi</button>` : ""}
             <button class="btn btn-secondary" id="admin-btn">${isAdmin ? "Útskrá stjórnanda" : "Innskráning stjórnanda"}</button>
             <button class="btn btn-secondary" id="theme-toggle-btn-inline">${window.__isLightMode && window.__isLightMode() ? "Dökkt þema" : "Ljóst þema"}</button>
@@ -4975,6 +5000,7 @@ const SCHEDULE = {
       ${showRulesModal ? renderRulesModalHtml() : ""}
       ${showDeleteAccountModal ? renderDeleteAccountModalHtml() : ""}
       ${showNotifModal ? renderNotifModalHtml() : ""}
+      ${showPrivacyModal ? renderPrivacyModalHtml() : ""}
       ${showAddToGroupModal && addToGroupTarget ? `
         <div class="modal-overlay" id="add-to-group-modal-overlay">
           <div class="modal-box">
@@ -5794,14 +5820,18 @@ const SCHEDULE = {
     if (switchLeagueBtn) switchLeagueBtn.addEventListener("click", openGroupsModal);
     const openLeagueBtn = document.getElementById("open-league-btn");
     if (openLeagueBtn) openLeagueBtn.addEventListener("click", openGroupsModal);
+    if (!window.__rulesEscBound) {
+      window.__rulesEscBound = true;
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        if (showPrivacyModal) { showPrivacyModal = false; render(); }
+        else if (showRulesModal) { showRulesModal = false; render(); }
+      });
+    }
     root.querySelectorAll(".rules-open-btn").forEach(b => b.addEventListener("click", () => { showRulesModal = true; render(); }));
     if (showRulesModal) {
       const overlay = document.getElementById("rules-modal-overlay");
       const closeRules = () => { showRulesModal = false; render(); };
-      if (!window.__rulesEscBound) {
-        window.__rulesEscBound = true;
-        document.addEventListener("keydown", (e) => { if (e.key === "Escape" && showRulesModal) { showRulesModal = false; render(); } });
-      }
       const closeBtn = document.getElementById("rules-close-btn");
       if (closeBtn) { closeBtn.addEventListener("click", closeRules); closeBtn.focus({ preventScroll: true }); }
       if (overlay) overlay.addEventListener("click", (e) => { if (e.target === overlay) closeRules(); });
@@ -6086,6 +6116,14 @@ const SCHEDULE = {
       });
     }
 
+    root.querySelectorAll(".privacy-open-btn").forEach(b => b.addEventListener("click", (e) => { e.preventDefault(); showRulesModal = false; showPrivacyModal = true; render(); }));
+    if (showPrivacyModal) {
+      const overlay = document.getElementById("privacy-modal-overlay");
+      const closeP = () => { showPrivacyModal = false; render(); };
+      const closeBtn = document.getElementById("privacy-close-btn");
+      if (closeBtn) { closeBtn.addEventListener("click", closeP); closeBtn.focus({ preventScroll: true }); }
+      if (overlay) overlay.addEventListener("click", (e) => { if (e.target === overlay) closeP(); });
+    }
     root.querySelectorAll(".notif-open-btn").forEach(b => b.addEventListener("click", openNotifModal));
     if (showNotifModal) {
       const overlay = document.getElementById("notif-modal-overlay");
@@ -6221,6 +6259,11 @@ const SCHEDULE = {
     }
     swRegistration(); // svo appið sé uppsetjanlegt og tilkynningar virki
     applyDeepLink();
+    if (window.location.hash === "#personuvernd") {
+      showGroupsModal = false;
+      showPrivacyModal = true;
+      try { history.replaceState(null, "", window.location.pathname + window.location.search); } catch (e) { /* hunsa */ }
+    }
     if (window.location.hash === DELETE_ACCOUNT_HASH && window.__supabaseClient) {
       showGroupsModal = false;
       showDeleteAccountModal = true;
