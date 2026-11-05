@@ -1,0 +1,37 @@
+name: Sækja úrslit (korfustatt.is)
+
+on:
+  schedule:
+    # UTC = íslenskur tími. Á 30 mín. fresti 19:00-23:30, og einu sinni að morgni til öryggis.
+    - cron: "*/30 19-23 * * *"
+    - cron: "0 8 * * *"
+  workflow_dispatch: {}   # "Run workflow" hnappur í Actions-flipanum
+
+permissions:
+  contents: write
+
+concurrency:
+  group: urslit
+  cancel-in-progress: false
+
+jobs:
+  urslit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pandas lxml requests
+      - run: python scripts/saekja_urslit.py
+      - name: Commit ef urslit.json breyttist
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add urslit.json
+          if git diff --cached --quiet; then
+            echo "Engin breyting."
+          else
+            git commit -m "Uppfæra úrslit frá korfustatt.is"
+            git push
+          fi
