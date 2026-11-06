@@ -1,0 +1,960 @@
+{
+  "source": "https://www.korfustatt.is/Timabil/Ka/2027",
+  "results": [
+    {
+      "date": "2026-10-08",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Keflavík",
+      "home_score": 90,
+      "away_score": 108
+    },
+    {
+      "date": "2026-10-08",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "ÍR",
+      "home_score": 91,
+      "away_score": 97
+    },
+    {
+      "date": "2026-10-08",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "Höttur",
+      "home_score": 111,
+      "away_score": 77
+    },
+    {
+      "date": "2026-10-08",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "Stjarnan",
+      "home_score": 90,
+      "away_score": 77
+    },
+    {
+      "date": "2026-10-09",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "Tindastóll",
+      "home_score": 77,
+      "away_score": 85
+    },
+    {
+      "date": "2026-10-09",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "KR",
+      "home_score": 80,
+      "away_score": 91
+    },
+    {
+      "date": "2026-10-15",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "Álftanes",
+      "home_score": 88,
+      "away_score": 119
+    },
+    {
+      "date": "2026-10-15",
+      "venue": "Sauðárkrókur",
+      "home": "Tindastóll",
+      "away": "Ármann",
+      "home_score": 109,
+      "away_score": 86
+    },
+    {
+      "date": "2026-10-15",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "Njarðvík",
+      "home_score": 84,
+      "away_score": 73
+    },
+    {
+      "date": "2026-10-15",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Sindri",
+      "home_score": 106,
+      "away_score": 90
+    },
+    {
+      "date": "2026-10-16",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "Höttur",
+      "home_score": 98,
+      "away_score": 103
+    },
+    {
+      "date": "2026-10-16",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "Grindavík",
+      "home_score": 81,
+      "away_score": 74
+    },
+    {
+      "date": "2026-10-22",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "Valur",
+      "home_score": 85,
+      "away_score": 93
+    },
+    {
+      "date": "2026-10-22",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "Ármann",
+      "home_score": 108,
+      "away_score": 74
+    },
+    {
+      "date": "2026-10-22",
+      "venue": "Varðarhöllin",
+      "home": "Höttur",
+      "away": "ÍR",
+      "home_score": 108,
+      "away_score": 96
+    },
+    {
+      "date": "2026-10-22",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "Stjarnan",
+      "home_score": 98,
+      "away_score": 92
+    },
+    {
+      "date": "2026-10-23",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "Tindastóll",
+      "home_score": 71,
+      "away_score": 78
+    },
+    {
+      "date": "2026-10-23",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "Keflavík",
+      "home_score": 130,
+      "away_score": 110
+    },
+    {
+      "date": "2026-10-29",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "ÍR",
+      "home_score": 102,
+      "away_score": 96
+    },
+    {
+      "date": "2026-10-29",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Höttur",
+      "home_score": 112,
+      "away_score": 99
+    },
+    {
+      "date": "2026-10-29",
+      "venue": "Sauðárkrókur",
+      "home": "Tindastóll",
+      "away": "Álftanes",
+      "home_score": 105,
+      "away_score": 108
+    },
+    {
+      "date": "2026-10-29",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "Sindri",
+      "home_score": 107,
+      "away_score": 102
+    },
+    {
+      "date": "2026-10-30",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "Ármann",
+      "home_score": 87,
+      "away_score": 84
+    },
+    {
+      "date": "2026-10-30",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "Njarðvík",
+      "home_score": 104,
+      "away_score": 103
+    },
+    {
+      "date": "2026-11-05",
+      "venue": "Varðarhöllin",
+      "home": "Höttur",
+      "away": "Tindastóll",
+      "home_score": 73,
+      "away_score": 80
+    },
+    {
+      "date": "2026-11-05",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "Keflavík",
+      "home_score": 90,
+      "away_score": 100
+    },
+    {
+      "date": "2026-11-05",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Grindavík",
+      "home_score": 81,
+      "away_score": 100
+    },
+    {
+      "date": "2026-11-05",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "KR",
+      "home_score": 94,
+      "away_score": 102
+    }
+  ],
+  "fixtures": [
+    {
+      "date": "2026-11-06",
+      "time": "19:00",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "Valur"
+    },
+    {
+      "date": "2026-11-06",
+      "time": "19:30",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "Stjarnan"
+    },
+    {
+      "date": "2026-11-09",
+      "time": "19:15",
+      "venue": "Sauðárkrókur",
+      "home": "Tindastóll",
+      "away": "ÍR"
+    },
+    {
+      "date": "2026-11-12",
+      "time": "19:15",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "Höttur"
+    },
+    {
+      "date": "2026-11-12",
+      "time": "19:15",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "Sindri"
+    },
+    {
+      "date": "2026-11-12",
+      "time": "19:15",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "Ármann"
+    },
+    {
+      "date": "2026-11-12",
+      "time": "19:15",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "Keflavík"
+    },
+    {
+      "date": "2026-11-13",
+      "time": "19:30",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "Álftanes"
+    },
+    {
+      "date": "2026-11-19",
+      "time": "19:15",
+      "venue": "Egilsstaðir",
+      "home": "Höttur",
+      "away": "Valur"
+    },
+    {
+      "date": "2026-11-19",
+      "time": "19:15",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "KR"
+    },
+    {
+      "date": "2026-11-19",
+      "time": "19:15",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Tindastóll"
+    },
+    {
+      "date": "2026-11-19",
+      "time": "19:15",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Stjarnan"
+    },
+    {
+      "date": "2026-11-20",
+      "time": "19:00",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "Njarðvík"
+    },
+    {
+      "date": "2026-11-20",
+      "time": "19:30",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "Grindavík"
+    },
+    {
+      "date": "2026-12-03",
+      "time": "19:15",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "Höttur"
+    },
+    {
+      "date": "2026-12-03",
+      "time": "19:15",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "Álftanes"
+    },
+    {
+      "date": "2026-12-03",
+      "time": "19:15",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Sindri"
+    },
+    {
+      "date": "2026-12-03",
+      "time": "19:15",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "Tindastóll"
+    },
+    {
+      "date": "2026-12-04",
+      "time": "19:00",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "ÍR"
+    },
+    {
+      "date": "2026-12-04",
+      "time": "19:30",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "Keflavík"
+    },
+    {
+      "date": "2026-12-10",
+      "time": "19:15",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "Ármann"
+    },
+    {
+      "date": "2026-12-10",
+      "time": "19:15",
+      "venue": "Egilsstaðir",
+      "home": "Höttur",
+      "away": "Njarðvík"
+    },
+    {
+      "date": "2026-12-10",
+      "time": "19:15",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "Grindavík"
+    },
+    {
+      "date": "2026-12-10",
+      "time": "19:15",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Valur"
+    },
+    {
+      "date": "2026-12-11",
+      "time": "19:00",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "Stjarnan"
+    },
+    {
+      "date": "2026-12-11",
+      "time": "19:30",
+      "venue": "Sauðárkrókur",
+      "home": "Tindastóll",
+      "away": "KR"
+    },
+    {
+      "date": "2026-12-17",
+      "time": "19:15",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "ÍR"
+    },
+    {
+      "date": "2026-12-17",
+      "time": "19:15",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Höttur"
+    },
+    {
+      "date": "2026-12-17",
+      "time": "19:15",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "Álftanes"
+    },
+    {
+      "date": "2026-12-17",
+      "time": "19:15",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "KR"
+    },
+    {
+      "date": "2026-12-18",
+      "time": "19:00",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "Tindastóll"
+    },
+    {
+      "date": "2026-12-18",
+      "time": "19:30",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "Keflavík"
+    },
+    {
+      "date": "2026-12-28",
+      "time": "19:15",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "Valur"
+    },
+    {
+      "date": "2026-12-28",
+      "time": "19:15",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "Stjarnan"
+    },
+    {
+      "date": "2026-12-29",
+      "time": "19:15",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "Ármann"
+    },
+    {
+      "date": "2026-12-29",
+      "time": "19:15",
+      "venue": "Sauðárkrókur",
+      "home": "Tindastóll",
+      "away": "Grindavík"
+    },
+    {
+      "date": "2026-12-30",
+      "time": "19:30",
+      "venue": "Egilsstaðir",
+      "home": "Höttur",
+      "away": "Sindri"
+    },
+    {
+      "date": "2026-12-30",
+      "time": "19:30",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Njarðvík"
+    },
+    {
+      "date": "2027-01-07",
+      "time": "19:15",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "Grindavík"
+    },
+    {
+      "date": "2027-01-07",
+      "time": "19:15",
+      "venue": "Sauðárkrókur",
+      "home": "Tindastóll",
+      "away": "Njarðvík"
+    },
+    {
+      "date": "2027-01-07",
+      "time": "19:15",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Ármann"
+    },
+    {
+      "date": "2027-01-07",
+      "time": "19:15",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "Sindri"
+    },
+    {
+      "date": "2027-01-07",
+      "time": "19:15",
+      "venue": "Egilsstaðir",
+      "home": "Höttur",
+      "away": "Álftanes"
+    },
+    {
+      "date": "2027-01-07",
+      "time": "19:15",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "Valur"
+    },
+    {
+      "date": "2027-01-14",
+      "time": "19:15",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "ÍR"
+    },
+    {
+      "date": "2027-01-14",
+      "time": "19:15",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "Keflavík"
+    },
+    {
+      "date": "2027-01-14",
+      "time": "19:15",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Tindastóll"
+    },
+    {
+      "date": "2027-01-14",
+      "time": "19:15",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "KR"
+    },
+    {
+      "date": "2027-01-14",
+      "time": "19:15",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "Valur"
+    },
+    {
+      "date": "2027-01-14",
+      "time": "19:15",
+      "venue": "Egilsstaðir",
+      "home": "Höttur",
+      "away": "Stjarnan"
+    },
+    {
+      "date": "2027-01-21",
+      "time": "19:15",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "Njarðvík"
+    },
+    {
+      "date": "2027-01-21",
+      "time": "19:15",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "KR"
+    },
+    {
+      "date": "2027-01-21",
+      "time": "19:15",
+      "venue": "Sauðárkrókur",
+      "home": "Tindastóll",
+      "away": "Sindri"
+    },
+    {
+      "date": "2027-01-21",
+      "time": "19:15",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Álftanes"
+    },
+    {
+      "date": "2027-01-21",
+      "time": "19:15",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "Höttur"
+    },
+    {
+      "date": "2027-01-21",
+      "time": "19:15",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "Grindavík"
+    },
+    {
+      "date": "2027-01-28",
+      "time": "19:15",
+      "venue": "Egilsstaðir",
+      "home": "Höttur",
+      "away": "Keflavík"
+    },
+    {
+      "date": "2027-01-28",
+      "time": "19:15",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "Tindastóll"
+    },
+    {
+      "date": "2027-01-28",
+      "time": "19:15",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "KR"
+    },
+    {
+      "date": "2027-01-28",
+      "time": "19:15",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Valur"
+    },
+    {
+      "date": "2027-01-28",
+      "time": "19:15",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "Grindavík"
+    },
+    {
+      "date": "2027-01-28",
+      "time": "19:15",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "Stjarnan"
+    },
+    {
+      "date": "2027-02-11",
+      "time": "19:15",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "Ármann"
+    },
+    {
+      "date": "2027-02-11",
+      "time": "19:15",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "Sindri"
+    },
+    {
+      "date": "2027-02-11",
+      "time": "19:15",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "Álftanes"
+    },
+    {
+      "date": "2027-02-11",
+      "time": "19:15",
+      "venue": "Sauðárkrókur",
+      "home": "Tindastóll",
+      "away": "Höttur"
+    },
+    {
+      "date": "2027-02-11",
+      "time": "19:15",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "ÍR"
+    },
+    {
+      "date": "2027-02-11",
+      "time": "19:15",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "Njarðvík"
+    },
+    {
+      "date": "2027-02-18",
+      "time": "19:15",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "Tindastóll"
+    },
+    {
+      "date": "2027-02-18",
+      "time": "19:15",
+      "venue": "Egilsstaðir",
+      "home": "Höttur",
+      "away": "KR"
+    },
+    {
+      "date": "2027-02-18",
+      "time": "19:15",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "Valur"
+    },
+    {
+      "date": "2027-02-18",
+      "time": "19:15",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "Grindavík"
+    },
+    {
+      "date": "2027-02-18",
+      "time": "19:15",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Njarðvík"
+    },
+    {
+      "date": "2027-02-18",
+      "time": "19:15",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Stjarnan"
+    },
+    {
+      "date": "2027-03-04",
+      "time": "19:15",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "Sindri"
+    },
+    {
+      "date": "2027-03-04",
+      "time": "19:15",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "Álftanes"
+    },
+    {
+      "date": "2027-03-04",
+      "time": "19:15",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "Höttur"
+    },
+    {
+      "date": "2027-03-04",
+      "time": "19:15",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "ÍR"
+    },
+    {
+      "date": "2027-03-04",
+      "time": "19:15",
+      "venue": "Sauðárkrókur",
+      "home": "Tindastóll",
+      "away": "Keflavík"
+    },
+    {
+      "date": "2027-03-04",
+      "time": "19:15",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "Ármann"
+    },
+    {
+      "date": "2027-03-11",
+      "time": "19:15",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "KR"
+    },
+    {
+      "date": "2027-03-11",
+      "time": "19:15",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "Valur"
+    },
+    {
+      "date": "2027-03-11",
+      "time": "19:15",
+      "venue": "Egilsstaðir",
+      "home": "Höttur",
+      "away": "Grindavík"
+    },
+    {
+      "date": "2027-03-11",
+      "time": "19:15",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "Njarðvík"
+    },
+    {
+      "date": "2027-03-11",
+      "time": "19:15",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "Ármann"
+    },
+    {
+      "date": "2027-03-11",
+      "time": "19:15",
+      "venue": "Sauðárkrókur",
+      "home": "Tindastóll",
+      "away": "Stjarnan"
+    },
+    {
+      "date": "2027-03-18",
+      "time": "19:15",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Álftanes"
+    },
+    {
+      "date": "2027-03-18",
+      "time": "19:15",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "Höttur"
+    },
+    {
+      "date": "2027-03-18",
+      "time": "19:15",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "ÍR"
+    },
+    {
+      "date": "2027-03-18",
+      "time": "19:15",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "Keflavík"
+    },
+    {
+      "date": "2027-03-18",
+      "time": "19:15",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "Tindastóll"
+    },
+    {
+      "date": "2027-03-18",
+      "time": "19:15",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "Sindri"
+    },
+    {
+      "date": "2027-03-24",
+      "time": "19:15",
+      "venue": "Sauðárkrókur",
+      "home": "Tindastóll",
+      "away": "Valur"
+    },
+    {
+      "date": "2027-03-24",
+      "time": "19:15",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Grindavík"
+    },
+    {
+      "date": "2027-03-24",
+      "time": "19:15",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "Njarðvík"
+    },
+    {
+      "date": "2027-03-24",
+      "time": "19:15",
+      "venue": "Egilsstaðir",
+      "home": "Höttur",
+      "away": "Ármann"
+    },
+    {
+      "date": "2027-03-24",
+      "time": "19:15",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "Sindri"
+    },
+    {
+      "date": "2027-03-24",
+      "time": "19:15",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "Stjarnan"
+    },
+    {
+      "date": "2027-03-30",
+      "time": "19:15",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "Höttur"
+    },
+    {
+      "date": "2027-03-30",
+      "time": "19:15",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "ÍR"
+    },
+    {
+      "date": "2027-03-30",
+      "time": "19:15",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "Keflavík"
+    },
+    {
+      "date": "2027-03-30",
+      "time": "19:15",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "Tindastóll"
+    },
+    {
+      "date": "2027-03-30",
+      "time": "19:15",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "KR"
+    },
+    {
+      "date": "2027-03-30",
+      "time": "19:15",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "Álftanes"
+    }
+  ],
+  "updated_at": "2026-11-06T09:02:20+00:00"
+}
