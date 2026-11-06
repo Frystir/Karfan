@@ -224,16 +224,17 @@
       "away": "KR",
       "home_score": 94,
       "away_score": 102
+    },
+    {
+      "date": "2026-11-06",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "Valur",
+      "home_score": 73,
+      "away_score": 86
     }
   ],
   "fixtures": [
-    {
-      "date": "2026-11-06",
-      "time": "19:00",
-      "venue": "Höfn",
-      "home": "Sindri",
-      "away": "Valur"
-    },
     {
       "date": "2026-11-06",
       "time": "19:30",
@@ -956,5 +957,5 @@
       "away": "Álftanes"
     }
   ],
-  "updated_at": "2026-11-06T09:02:20+00:00"
+  "updated_at": "2026-11-06T23:40:18+00:00"
 }
