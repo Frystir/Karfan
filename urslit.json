@@ -236,13 +236,6 @@
   ],
   "fixtures": [
     {
-      "date": "2026-11-06",
-      "time": "19:30",
-      "venue": "Stapaskóli",
-      "home": "Njarðvík",
-      "away": "Stjarnan"
-    },
-    {
       "date": "2026-11-09",
       "time": "19:15",
       "venue": "Sauðárkrókur",
@@ -957,5 +950,5 @@
       "away": "Álftanes"
     }
   ],
-  "updated_at": "2026-11-06T23:40:18+00:00"
+  "updated_at": "2026-11-07T14:37:37+00:00"
 }
