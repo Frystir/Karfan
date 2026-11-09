@@ -44,9 +44,25 @@ def split_game(text):
     return (parts[0].strip(), parts[1].strip()) if len(parts) == 2 else (str(text).strip(), "")
 
 
+def cell(value):
+    """Tómur reitur í pandas er NaN; skila þá "" í stað "nan"."""
+    if value is None or (isinstance(value, float) and value != value):
+        return ""
+    return str(value).strip()
+
+
 def iso_date(text):
-    d, mo, y = str(text).strip().split(".")
+    m = re.search(r"(\d{1,2})\.(\d{1,2})\.(\d{4})", str(text))
+    if not m:
+        raise ValueError(f"Ógild dagsetning: {text!r}")
+    d, mo, y = m.groups()
     return f"{int(y):04d}-{int(mo):02d}-{int(d):02d}"
+
+
+def norm_time(text):
+    """'19:15', '19.15' eða '9:00' -> 'HH:MM'; annars '' (tími ekki ákveðinn)."""
+    m = re.search(r"(\d{1,2})[:.](\d{2})", cell(text))
+    return f"{int(m.group(1)):02d}:{m.group(2)}" if m else ""
 
 
 def clean_results(df):
@@ -62,7 +78,7 @@ def clean_results(df):
             date = ""
         rows.append({
             "date": date,
-            "venue": str(r.get("Völlur", "") or ""),
+            "venue": cell(r.get("Völlur")),
             "home": home,
             "away": away,
             "home_score": int(m.group(1)),
@@ -81,8 +97,8 @@ def clean_fixtures(df):
             continue
         rows.append({
             "date": date,
-            "time": str(r.get("Tími", "") or ""),
-            "venue": str(r.get("Völlur", "") or ""),
+            "time": norm_time(r.get("Tími")),
+            "venue": cell(r.get("Völlur")),
             "home": home,
             "away": away,
         })
