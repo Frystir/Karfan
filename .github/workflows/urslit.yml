@@ -1,10 +1,14 @@
-name: Sækja úrslit (korfustatt.is)
+name: Sækja úrslit og leiktíma (korfustatt.is)
 
 on:
   schedule:
-    # UTC = íslenskur tími. Á 30 mín. fresti 19:00-23:30, og einu sinni að morgni til öryggis.
-    - cron: "*/30 19-23 * * *"
-    - cron: "0 8 * * *"
+    # UTC = íslenskur tími allt árið.
+    # 1) Leikjakvöld: á 10 mín. fresti 16:00-23:50. scripts/tharf_ad_saekja.py sleppir keyrslunni
+    #    nema leikur sé í dag sem hófst fyrir 75+ mín. og bíður úrslita (tekur þá ~10 sek.).
+    - cron: "*/10 16-23 * * *"
+    # 2) Dagskrárathugun á 3 klst. fresti, alla daga: grípur breytta leiktíma og síðbúin úrslit.
+    #    Ef þessu er breytt þarf líka að breyta DAGSKRAR_CRON í scripts/tharf_ad_saekja.py.
+    - cron: "17 */3 * * *"
   workflow_dispatch: {}   # "Run workflow" hnappur í Actions-flipanum
 
 permissions:
@@ -19,12 +23,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Þarf að sækja?
+        id: gate
+        env:
+          EVENT: ${{ github.event_name }}
+          CRON: ${{ github.event.schedule }}
+        run: python3 scripts/tharf_ad_saekja.py
+
       - uses: actions/setup-python@v5
+        if: steps.gate.outputs.run == 'true'
         with:
           python-version: "3.12"
-      - run: pip install pandas lxml requests
-      - run: python scripts/saekja_urslit.py
+          cache: pip
+          cache-dependency-path: .github/workflows/urslit.yml
+
+      - if: steps.gate.outputs.run == 'true'
+        run: pip install pandas lxml requests
+
+      - if: steps.gate.outputs.run == 'true'
+        run: python scripts/saekja_urslit.py
+
       - name: Commit ef urslit.json breyttist
+        if: steps.gate.outputs.run == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
@@ -32,6 +53,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Engin breyting."
           else
-            git commit -m "Uppfæra úrslit frá korfustatt.is"
+            git commit -m "Uppfæra úrslit/leiktíma frá korfustatt.is"
+            git pull --rebase
             git push
           fi
