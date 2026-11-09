@@ -687,8 +687,8 @@
 // dreift. Birtist sem lítið merki neðst t.v. og í console.log, svo hægt
 // sé að sjá strax hvaða útgáfu notandi er með (t.d. við villuleit).
 // Halda í takt við git tag (t.d. "git tag v1.28.0") og CHANGELOG.md.
-const APP_VERSION = "1.47.0";
-const APP_VERSION_DATE = "2026-11-05";
+const APP_VERSION = "1.48.0";
+const APP_VERSION_DATE = "2026-11-09";
 
 // Netfang sem notendur geta haft samband við, t.d. ef þeir komast ekki inn til að eyða aðgangi.
 // Birtist á innskráningarskjá (slóðin ...#eyda-adgangi) og í glugganum "Eyða aðgangi". Autt = ekki birt.
@@ -1320,6 +1320,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
   let secondBonusPicks = {}; // roundKey -> team name (fæst stig í umferðinni)
   let roundStartTimes = null; // roundKey -> "YYYY-MM-DDTHH:MM" (fyrsti leikur umferðar) - sett að neðan út frá raunverulegu leikjaplani
   let gameScores = {}; // gameId -> { home: number|null, away: number|null }
+  let gameTimes = {}; // gameId -> { date, time } - breyttir leiktímar deildarleikja (frá korfustatt.is), deilt öllum
   let superCupHundred = null; // Meistari meistaranna: "home" | "away" | "none" - hvaða lið skorar 100+ stig (eða hvorugt)
   let groupPicksOpen = {}; // roundKey -> boolean (er "sjá giskanir hópsins" opið fyrir þessa umferð)
 
@@ -1545,6 +1546,18 @@ const SCHEDULE = {
     });
     return map;
   }
+  // Upprunalegir leiktímar deildarleikja (v1.48.0). Breyttir tímar eru geymdir í gameTimes og lagðir ofan á.
+  const BASE_GAME_TIMES = {};
+  ["leg1", "leg2"].forEach(leg => SCHEDULE[leg].forEach((pairs, rIdx) => pairs.forEach((p, gIdx) => {
+    BASE_GAME_TIMES[leg + "-r" + rIdx + "-g" + gIdx] = { date: p.date, time: p.time };
+  })));
+  function applyGameTimes() {
+    ["leg1", "leg2"].forEach(leg => SCHEDULE[leg].forEach((pairs, rIdx) => pairs.forEach((p, gIdx) => {
+      const id = leg + "-r" + rIdx + "-g" + gIdx;
+      const o = gameTimes[id] || BASE_GAME_TIMES[id];
+      if (o) { p.date = o.date; p.time = o.time; }
+    })));
+  }
   const DEFAULT_ROUND_START_TIMES = computeDefaultRoundStartTimes();
   roundStartTimes = Object.assign({}, DEFAULT_ROUND_START_TIMES);
 
@@ -1610,9 +1623,10 @@ const SCHEDULE = {
       showToast("Gat ekki sótt úrslit (" + (e && e.message ? e.message : "villa") + ").", true);
       return;
     }
-    const index = {};
+    const index = {}, loc = {};
     ["leg1", "leg2"].forEach(leg => SCHEDULE[leg].forEach((pairs, rIdx) => pairs.forEach((p, gIdx) => {
       index[p.home + "|" + p.away] = gameId(leg, rIdx, gIdx);
+      loc[p.home + "|" + p.away] = { leg, rIdx, gIdx };
     })));
     let added = 0, same = 0;
     const conflicts = [], unmatched = [];
@@ -1630,12 +1644,49 @@ const SCHEDULE = {
       gameScores[id] = { home: hs, away: as };
       added++;
     });
-    if (added) globalDirty = true;
+    // Leiktímar (v1.48.0): uppfæra dagsetningu/tíma óspilaðra leikja eftir dagskránni á korfustatt.is.
+    const timeChanges = [], touchedRounds = new Set();
+    (Array.isArray(feed.fixtures) ? feed.fixtures : []).forEach(f => {
+      const home = normTeamName(f.home), away = normTeamName(f.away);
+      const l = loc[home + "|" + away];
+      const date = /^\d{4}-\d{2}-\d{2}$/.test(String(f.date || "")) ? f.date : "";
+      const tm = String(f.time || "").match(/^(\d{1,2})[:.](\d{2})$/);
+      if (!l || !date || !tm) return;
+      const time = tm[1].padStart(2, "0") + ":" + tm[2];
+      const id = gameId(l.leg, l.rIdx, l.gIdx);
+      const sc = gameScores[id];
+      if (sc && typeof sc.home === "number" && typeof sc.away === "number") return; // þegar spilaður
+      const p = SCHEDULE[l.leg][l.rIdx][l.gIdx];
+      if (p.date === date && p.time === time) return;
+      timeChanges.push(home + " - " + away + ": " + fmtGameDate(p.date, p.time) + " \u2192 " + fmtGameDate(date, time));
+      p.date = date; p.time = time;
+      const base = BASE_GAME_TIMES[id];
+      if (base && base.date === date && base.time === time) delete gameTimes[id];
+      else gameTimes[id] = { date, time };
+      touchedRounds.add(l.leg + "-r" + l.rIdx);
+    });
+    // Lokunartími umferðar = elsti leiktími hennar. Umferðum sem eru þegar læstar er aldrei breytt,
+    // svo frestun leiks geti ekki opnað aftur fyrir giskanir eftir að umferð hófst.
+    const lockedRoundsSkipped = [];
+    touchedRounds.forEach(key => {
+      const li = roundLockInfo(key);
+      if (li && li.locked) { lockedRoundsSkipped.push(key); return; }
+      const m = key.match(/^(leg\d)-r(\d+)$/);
+      let earliest = null;
+      SCHEDULE[m[1]][Number(m[2])].forEach(p => {
+        if (!p.date || !p.time) return;
+        const iso = p.date + "T" + p.time;
+        if (!earliest || iso < earliest) earliest = iso;
+      });
+      if (earliest) roundStartTimes[key] = earliest;
+    });
+    if (added || timeChanges.length) globalDirty = true;
     render();
     const when = feed.updated_at ? " (gögn frá " + new Date(feed.updated_at).toLocaleString("is-IS") + ")" : "";
-    let msg = added
-      ? added + " ný úrslit sett inn" + when + ". Smelltu á „Vista allt“ til að vista."
-      : "Engin ný úrslit" + when + ".";
+    let msg = (added ? added + " ný úrslit sett inn" : "Engin ný úrslit")
+      + (timeChanges.length ? ", " + timeChanges.length + " leiktímar uppfærðir" : "")
+      + when + "."
+      + ((added || timeChanges.length) ? " Smelltu á „Vista allt“ til að vista." : "");
     if (conflicts.length) msg += " " + conflicts.length + " leikir stangast á við skráð stig.";
     if (unmatched.length) msg += " " + unmatched.length + " leikir fundust ekki í leikjaplani.";
     showToast(msg, !!(conflicts.length || unmatched.length) && !added);
@@ -1644,9 +1695,11 @@ const SCHEDULE = {
       const extra = [];
       if (conflicts.length) extra.push("Stangast á: " + conflicts.join("; "));
       if (unmatched.length) extra.push("Fannst ekki: " + unmatched.join("; "));
-      statusEl.textContent = (added ? "Óvistaðar breytingar. " : "") + extra.join(" | ");
+      if (timeChanges.length) extra.push("Breyttir leiktímar: " + timeChanges.join("; "));
+      if (lockedRoundsSkipped.length) extra.push("Lokunartíma ekki breytt (umferð þegar læst): " + lockedRoundsSkipped.join(", "));
+      statusEl.textContent = ((added || timeChanges.length) ? "Óvistaðar breytingar. " : "") + extra.join(" | ");
     }
-    if (conflicts.length || unmatched.length) console.info("Sækja úrslit", { conflicts, unmatched });
+    if (conflicts.length || unmatched.length || timeChanges.length) console.info("Sækja úrslit", { conflicts, unmatched, timeChanges, lockedRoundsSkipped });
   }
 
   function pickedCount(leg) {
@@ -1684,6 +1737,7 @@ const SCHEDULE = {
     if (typeof parsed.results === "object" && parsed.results) results = parsed.results;
     if (typeof parsed.roundStartTimes === "object" && parsed.roundStartTimes) roundStartTimes = Object.assign({}, DEFAULT_ROUND_START_TIMES, parsed.roundStartTimes);
     if (typeof parsed.gameScores === "object" && parsed.gameScores) gameScores = parsed.gameScores;
+    if (typeof parsed.gameTimes === "object" && parsed.gameTimes) { gameTimes = parsed.gameTimes; applyGameTimes(); }
     if (typeof parsed.extraActuals === "object" && parsed.extraActuals) extraActuals = parsed.extraActuals;
     if (typeof parsed.cupDraws === "object" && parsed.cupDraws) { cupDraws = parsed.cupDraws; rebuildCupSchedule(); }
     ["phase1", "phase2"].forEach(p => {
@@ -1694,7 +1748,7 @@ const SCHEDULE = {
 
   async function saveGlobal() {
     const payload = {
-      results, roundStartTimes, gameScores, extraActuals, cupDraws,
+      results, roundStartTimes, gameScores, gameTimes, extraActuals, cupDraws,
       actual_phase1: actuals.phase1, actual_phase2: actuals.phase2,
       savedAt: Date.now()
     };
@@ -5129,7 +5183,7 @@ const SCHEDULE = {
           </div>
           <p class="score-note">${isCupTab ? `${withResult > 0 ? withResult + " bikarleikir með skráð úrslit." : "Engin bikarúrslit skráð enn."} 1 stig fæst fyrir hvern bikarleik sem þú giskaðir réttan sigurvegara í (15 leikir alls: 8 + 4 + 2 + 1). Engar aukaspár eru í bikarnum.${isAdmin ? " Í úrslitaskráningu skráir stjórnandi viðureignir hverrar umferðar eftir drátt (lið, dagsetningu, tíma og leikvöll) og síðan úrslitin." : ""}` : isSuperCupTab ? `${withResult > 0 ? "Úrslit skráð." : "Engin úrslit skráð enn."} 1 stig fæst fyrir réttan sigurvegara og 1 aukastig ef þú valdir rétt hvort liðið skoraði 100 stig eða meira (eða hvorugt). Ef bæði lið ná 100 stigum gildir hvort liðið sem er. Hámark í þessum flipa: 2 stig.` : `${withResult > 0 ? withResult + " leikir í þessum hluta með skráð úrslit." : "Engin úrslit skráð enn í þessum hluta."} 1 stig fæst fyrir hvern leik sem þú giskaðir réttan sigurvegara í. Auk þess fást 2 aukastig fyrir hverja umferð þar sem valið lið í &bdquo;100 stig eða meira&ldquo;-spánni skorar 100 stig eða meira (3 stig ef þú giskar á nákvæmlega réttu töluna), og 2 aukastig fyrir hverja umferð þar sem &bdquo;fæst stig&ldquo;-spáin gengur eftir (${bonus} aukastig í þessum hluta). Samtals báðir hlutar: ${total.combined} stig (${total.withResult} leikir með úrslit, ${total.bonus} aukastig).`}</p>
           ${isAdmin
-            ? `<button class="btn btn-secondary" id="toggle-results-btn">${editing ? "Loka úrslitaskráningu" : (isCupTab ? "Skrá viðureignir og úrslit" : "Skrá/breyta úrslitum leikja")}</button>${(isCupTab || isSuperCupTab) ? "" : ` <button class="btn btn-secondary" id="import-results-btn">Sækja úrslit (korfustatt.is)</button>`}`
+            ? `<button class="btn btn-secondary" id="toggle-results-btn">${editing ? "Loka úrslitaskráningu" : (isCupTab ? "Skrá viðureignir og úrslit" : "Skrá/breyta úrslitum leikja")}</button>${(isCupTab || isSuperCupTab) ? "" : ` <button class="btn btn-secondary" id="import-results-btn">Sækja úrslit og leiktíma (korfustatt.is)</button>`}`
             : `<p class="admin-only-note">Aðeins stjórnandi getur skráð eða breytt úrslitum leikja.</p><button class="btn btn-secondary" id="admin-login-inline-btn">Innskráning stjórnanda</button>`
           }
         </div>
