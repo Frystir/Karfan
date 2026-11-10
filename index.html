@@ -687,8 +687,8 @@
 // dreift. Birtist sem lítið merki neðst t.v. og í console.log, svo hægt
 // sé að sjá strax hvaða útgáfu notandi er með (t.d. við villuleit).
 // Halda í takt við git tag (t.d. "git tag v1.28.0") og CHANGELOG.md.
-const APP_VERSION = "1.48.0";
-const APP_VERSION_DATE = "2026-11-09";
+const APP_VERSION = "1.49.0";
+const APP_VERSION_DATE = "2026-11-10";
 
 // Netfang sem notendur geta haft samband við, t.d. ef þeir komast ekki inn til að eyða aðgangi.
 // Birtist á innskráningarskjá (slóðin ...#eyda-adgangi) og í glugganum "Eyða aðgangi". Autt = ekki birt.
@@ -1320,6 +1320,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
   let secondBonusPicks = {}; // roundKey -> team name (fæst stig í umferðinni)
   let roundStartTimes = null; // roundKey -> "YYYY-MM-DDTHH:MM" (fyrsti leikur umferðar) - sett að neðan út frá raunverulegu leikjaplani
   let gameScores = {}; // gameId -> { home: number|null, away: number|null }
+  let roundStartManual = {}; // roundKey -> "YYYY-MM-DDTHH:MM" - handvirk/fryst lokun deildarumferðar (annars fyrsti leikur)
   let gameTimes = {}; // gameId -> { date, time } - breyttir leiktímar deildarleikja (frá korfustatt.is), deilt öllum
   let superCupHundred = null; // Meistari meistaranna: "home" | "away" | "none" - hvaða lið skorar 100+ stig (eða hvorugt)
   let groupPicksOpen = {}; // roundKey -> boolean (er "sjá giskanir hópsins" opið fyrir þessa umferð)
@@ -1560,6 +1561,25 @@ const SCHEDULE = {
   }
   const DEFAULT_ROUND_START_TIMES = computeDefaultRoundStartTimes();
   roundStartTimes = Object.assign({}, DEFAULT_ROUND_START_TIMES);
+  // Upphaf umferðar (v1.49.0). Deildarumferðir: reiknað beint út frá leiktímum (fyrsti leikur
+  // umferðar), svo lokunin fylgir alltaf núgildandi leiktímum. Handvirk/fryst gildi í roundStartManual
+  // ráða ef þau eru til. Bikar og Meistari meistaranna nota roundStartTimes eins og áður.
+  function isLeagueRoundKey(key) { return /^leg[12]-r\d+$/.test(key); }
+  function earliestLeagueStart(key) {
+    const m = String(key).match(/^(leg[12])-r(\d+)$/);
+    if (!m || !SCHEDULE[m[1]][Number(m[2])]) return null;
+    let earliest = null;
+    SCHEDULE[m[1]][Number(m[2])].forEach(p => {
+      if (!p.date || !p.time) return;
+      const iso = p.date + "T" + p.time;
+      if (!earliest || iso < earliest) earliest = iso;
+    });
+    return earliest;
+  }
+  function roundStartFor(key) {
+    if (isLeagueRoundKey(key)) return roundStartManual[key] || earliestLeagueStart(key) || null;
+    return roundStartTimes[key] || null;
+  }
 
   function fmtGameDate(dateStr, timeStr) {
     if (!dateStr) return "";
@@ -1645,7 +1665,7 @@ const SCHEDULE = {
       added++;
     });
     // Leiktímar (v1.48.0): uppfæra dagsetningu/tíma óspilaðra leikja eftir dagskránni á korfustatt.is.
-    const timeChanges = [], touchedRounds = new Set();
+    const timeChanges = [], touchedRounds = new Set(), lockedRoundsSkipped = [];
     (Array.isArray(feed.fixtures) ? feed.fixtures : []).forEach(f => {
       const home = normTeamName(f.home), away = normTeamName(f.away);
       const l = loc[home + "|" + away];
@@ -1658,6 +1678,12 @@ const SCHEDULE = {
       if (sc && typeof sc.home === "number" && typeof sc.away === "number") return; // þegar spilaður
       const p = SCHEDULE[l.leg][l.rIdx][l.gIdx];
       if (p.date === date && p.time === time) return;
+      const rk = l.leg + "-r" + l.rIdx;
+      if (!touchedRounds.has(rk)) {
+        // Umferð sem er þegar læst er fryst á núverandi upphafi, svo frestun opni ekki aftur fyrir giskanir
+        const li = roundLockInfo(rk);
+        if (li && li.locked && !roundStartManual[rk]) { roundStartManual[rk] = roundStartFor(rk); lockedRoundsSkipped.push(rk); }
+      }
       timeChanges.push(home + " - " + away + ": " + fmtGameDate(p.date, p.time) + " \u2192 " + fmtGameDate(date, time));
       p.date = date; p.time = time;
       const base = BASE_GAME_TIMES[id];
@@ -1665,21 +1691,7 @@ const SCHEDULE = {
       else gameTimes[id] = { date, time };
       touchedRounds.add(l.leg + "-r" + l.rIdx);
     });
-    // Lokunartími umferðar = elsti leiktími hennar. Umferðum sem eru þegar læstar er aldrei breytt,
-    // svo frestun leiks geti ekki opnað aftur fyrir giskanir eftir að umferð hófst.
-    const lockedRoundsSkipped = [];
-    touchedRounds.forEach(key => {
-      const li = roundLockInfo(key);
-      if (li && li.locked) { lockedRoundsSkipped.push(key); return; }
-      const m = key.match(/^(leg\d)-r(\d+)$/);
-      let earliest = null;
-      SCHEDULE[m[1]][Number(m[2])].forEach(p => {
-        if (!p.date || !p.time) return;
-        const iso = p.date + "T" + p.time;
-        if (!earliest || iso < earliest) earliest = iso;
-      });
-      if (earliest) roundStartTimes[key] = earliest;
-    });
+    // Lokunartími ólæstra umferða fylgir nú sjálfkrafa fyrsta leik (roundStartFor), ekkert að uppfæra hér.
     if (added || timeChanges.length) globalDirty = true;
     render();
     const when = feed.updated_at ? " (gögn frá " + new Date(feed.updated_at).toLocaleString("is-IS") + ")" : "";
@@ -1696,7 +1708,7 @@ const SCHEDULE = {
       if (conflicts.length) extra.push("Stangast á: " + conflicts.join("; "));
       if (unmatched.length) extra.push("Fannst ekki: " + unmatched.join("; "));
       if (timeChanges.length) extra.push("Breyttir leiktímar: " + timeChanges.join("; "));
-      if (lockedRoundsSkipped.length) extra.push("Lokunartíma ekki breytt (umferð þegar læst): " + lockedRoundsSkipped.join(", "));
+      if (lockedRoundsSkipped.length) extra.push("Lokun fryst (umferð þegar læst): " + lockedRoundsSkipped.join(", "));
       statusEl.textContent = ((added || timeChanges.length) ? "Óvistaðar breytingar. " : "") + extra.join(" | ");
     }
     if (conflicts.length || unmatched.length || timeChanges.length) console.info("Sækja úrslit", { conflicts, unmatched, timeChanges, lockedRoundsSkipped });
@@ -1738,6 +1750,18 @@ const SCHEDULE = {
     if (typeof parsed.roundStartTimes === "object" && parsed.roundStartTimes) roundStartTimes = Object.assign({}, DEFAULT_ROUND_START_TIMES, parsed.roundStartTimes);
     if (typeof parsed.gameScores === "object" && parsed.gameScores) gameScores = parsed.gameScores;
     if (typeof parsed.gameTimes === "object" && parsed.gameTimes) { gameTimes = parsed.gameTimes; applyGameTimes(); }
+    if (typeof parsed.roundStartManual === "object" && parsed.roundStartManual) {
+      roundStartManual = parsed.roundStartManual;
+    } else if (typeof parsed.roundStartTimes === "object" && parsed.roundStartTimes) {
+      // Eldri gögn (fyrir v1.49.0): gildi sem stjórnandi breytti handvirkt halda sér sem handvirk lokun.
+      // Gildi sem eru bara gamli sjálfgefni tíminn (eða núverandi fyrsti leikur) fylgja leiktímum héðan í frá.
+      roundStartManual = {};
+      Object.keys(parsed.roundStartTimes).forEach(key => {
+        if (!isLeagueRoundKey(key)) return;
+        const v = parsed.roundStartTimes[key];
+        if (v && v !== DEFAULT_ROUND_START_TIMES[key] && v !== earliestLeagueStart(key)) roundStartManual[key] = v;
+      });
+    }
     if (typeof parsed.extraActuals === "object" && parsed.extraActuals) extraActuals = parsed.extraActuals;
     if (typeof parsed.cupDraws === "object" && parsed.cupDraws) { cupDraws = parsed.cupDraws; rebuildCupSchedule(); }
     ["phase1", "phase2"].forEach(p => {
@@ -1747,8 +1771,13 @@ const SCHEDULE = {
   }
 
   async function saveGlobal() {
+    // Halda roundStartTimes í takt fyrir eldri útgáfur appsins sem lesa það beint
+    ["leg1", "leg2"].forEach(leg => SCHEDULE[leg].forEach((_, r) => {
+      const k = leg + "-r" + r, v = roundStartFor(k);
+      if (v) roundStartTimes[k] = v; else delete roundStartTimes[k];
+    }));
     const payload = {
-      results, roundStartTimes, gameScores, gameTimes, extraActuals, cupDraws,
+      results, roundStartTimes, roundStartManual, gameScores, gameTimes, extraActuals, cupDraws,
       actual_phase1: actuals.phase1, actual_phase2: actuals.phase2,
       savedAt: Date.now()
     };
@@ -4220,8 +4249,10 @@ const SCHEDULE = {
         html += `
           <div class="round-lock-row">
             <label class="round-lock-label">Fyrsti leikur umferðar:</label>
-            <input type="datetime-local" class="round-start-input" data-round="${roundKey}" value="${roundStartTimes[roundKey] || ""}" />
-            ${lockBadgeHtml}
+            <input type="datetime-local" class="round-start-input" data-round="${roundKey}" value="${roundStartFor(roundKey) || ""}" />
+            ${lockBadgeHtml}${isLeagueRoundKey(roundKey) ? (roundStartManual[roundKey]
+              ? ` <span class="lock-badge pending" title="Tæmdu reitinn til að láta lokun fylgja fyrsta leik aftur">Handvirkt</span>`
+              : ` <span class="lock-badge pending">Fylgir fyrsta leik</span>`) : ""}
           </div>
         `;
       }
@@ -4493,13 +4524,13 @@ const SCHEDULE = {
   function phaseLockSource(phase, info) {
     const leg = phase === "phase1" ? "leg1" : "leg2";
     const baseKey = leg + "-r0";
-    const base = roundStartTimes[baseKey];
+    const base = roundStartFor(baseKey);
     if (info && info.phaseLocks && info.phaseLocks[phase]) return { raw: info.phaseLocks[phase], source: "admin", roundKey: null };
     if (info && info.createdAt && base) {
       const baseT = new Date(base).getTime();
       if (!isNaN(baseT) && info.createdAt > baseT) {
         for (let r = 0; r < SCHEDULE[leg].length; r++) {
-          const st = roundStartTimes[leg + "-r" + r];
+          const st = roundStartFor(leg + "-r" + r);
           const t = st ? new Date(st).getTime() : NaN;
           if (!isNaN(t) && t > info.createdAt) return { raw: st, source: "group", roundKey: leg + "-r" + r };
         }
@@ -4554,7 +4585,7 @@ const SCHEDULE = {
   }
 
   function roundLockInfo(roundKey) {
-    const raw = roundStartTimes[roundKey];
+    const raw = roundStartFor(roundKey);
     if (!raw) return null;
     const start = new Date(raw);
     if (isNaN(start.getTime())) return null;
@@ -5254,7 +5285,11 @@ const SCHEDULE = {
         inp.addEventListener("change", () => {
           const roundKey = inp.getAttribute("data-round");
           globalDirty = true;
-          if (!inp.value) delete roundStartTimes[roundKey];
+          if (isLeagueRoundKey(roundKey)) {
+            // Deildarumferð: autt = fylgja fyrsta leik; sama gildi og fyrsti leikur = ekki handvirkt
+            if (!inp.value || inp.value === earliestLeagueStart(roundKey)) delete roundStartManual[roundKey];
+            else roundStartManual[roundKey] = inp.value;
+          } else if (!inp.value) delete roundStartTimes[roundKey];
           else roundStartTimes[roundKey] = inp.value;
           render();
           const statusEl = document.getElementById("status-line");
