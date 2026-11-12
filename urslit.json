@@ -248,43 +248,47 @@
       "away": "ÍR",
       "home_score": 94,
       "away_score": 87
+    },
+    {
+      "date": "2026-11-12",
+      "venue": "Valsheimili",
+      "home": "Valur",
+      "away": "Álftanes",
+      "home_score": 68,
+      "away_score": 80
+    },
+    {
+      "date": "2026-11-12",
+      "venue": "Stapaskóli",
+      "home": "Njarðvík",
+      "away": "Ármann",
+      "home_score": 107,
+      "away_score": 97
+    },
+    {
+      "date": "2026-11-12",
+      "venue": "Meistaravellir",
+      "home": "KR",
+      "away": "Höttur",
+      "home_score": 112,
+      "away_score": 92
+    },
+    {
+      "date": "2026-11-12",
+      "venue": "Ásgarður",
+      "home": "Stjarnan",
+      "away": "Keflavík",
+      "home_score": 113,
+      "away_score": 94
     }
   ],
   "fixtures": [
     {
       "date": "2026-11-12",
       "time": "19:15",
-      "venue": "Meistaravellir",
-      "home": "KR",
-      "away": "Höttur"
-    },
-    {
-      "date": "2026-11-12",
-      "time": "19:15",
       "venue": "Grindavík",
       "home": "Grindavík",
       "away": "Sindri"
-    },
-    {
-      "date": "2026-11-12",
-      "time": "19:15",
-      "venue": "Stapaskóli",
-      "home": "Njarðvík",
-      "away": "Ármann"
-    },
-    {
-      "date": "2026-11-12",
-      "time": "19:15",
-      "venue": "Ásgarður",
-      "home": "Stjarnan",
-      "away": "Keflavík"
-    },
-    {
-      "date": "2026-11-13",
-      "time": "19:30",
-      "venue": "Valsheimili",
-      "home": "Valur",
-      "away": "Álftanes"
     },
     {
       "date": "2026-11-19",
@@ -959,5 +963,5 @@
       "away": "Álftanes"
     }
   ],
-  "updated_at": "2026-11-09T23:47:50+00:00"
+  "updated_at": "2026-11-12T22:11:33+00:00"
 }
