@@ -280,6 +280,14 @@
       "away": "Keflavík",
       "home_score": 113,
       "away_score": 94
+    },
+    {
+      "date": "2026-11-13",
+      "venue": "Grindavík",
+      "home": "Grindavík",
+      "away": "Sindri",
+      "home_score": 84,
+      "away_score": 76
     }
   ],
   "fixtures": [
@@ -956,5 +964,5 @@
       "away": "Álftanes"
     }
   ],
-  "updated_at": "2026-11-13T01:51:36+00:00"
+  "updated_at": "2026-11-14T01:28:10+00:00"
 }
