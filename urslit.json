@@ -308,16 +308,16 @@
     {
       "date": "2026-11-19",
       "time": "19:15",
-      "venue": "Laugardalshöll",
-      "home": "Ármann",
-      "away": "Stjarnan"
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Tindastóll"
     },
     {
       "date": "2026-11-19",
-      "time": "19:30",
-      "venue": "Álftanes",
-      "home": "Álftanes",
-      "away": "Grindavík"
+      "time": "19:15",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Stjarnan"
     },
     {
       "date": "2026-11-20",
@@ -328,10 +328,10 @@
     },
     {
       "date": "2026-11-20",
-      "time": "19:15",
-      "venue": "Keflavík",
-      "home": "Keflavík",
-      "away": "Tindastóll"
+      "time": "19:30",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "Grindavík"
     },
     {
       "date": "2026-12-03",
@@ -964,5 +964,5 @@
       "away": "Álftanes"
     }
   ],
-  "updated_at": "2026-11-19T20:40:33+00:00"
+  "updated_at": "2026-11-19T22:59:45+00:00"
 }
