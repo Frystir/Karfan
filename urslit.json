@@ -203,14 +203,6 @@
     },
     {
       "date": "2026-11-05",
-      "venue": "Skógarsel",
-      "home": "ÍR",
-      "away": "Keflavík",
-      "home_score": 90,
-      "away_score": 100
-    },
-    {
-      "date": "2026-11-05",
       "venue": "Laugardalshöll",
       "home": "Ármann",
       "away": "Grindavík",
@@ -224,6 +216,14 @@
       "away": "KR",
       "home_score": 94,
       "away_score": 102
+    },
+    {
+      "date": "2026-11-05",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "Keflavík",
+      "home_score": 90,
+      "away_score": 100
     },
     {
       "date": "2026-11-06",
@@ -291,6 +291,14 @@
     },
     {
       "date": "2026-11-19",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Stjarnan",
+      "home_score": 95,
+      "away_score": 116
+    },
+    {
+      "date": "2026-11-19",
       "venue": "Álftanes",
       "home": "Álftanes",
       "away": "Grindavík",
@@ -314,30 +322,24 @@
       "away_score": 88
     },
     {
-      "date": "2026-11-19",
-      "venue": "Laugardalshöll",
-      "home": "Ármann",
-      "away": "Stjarnan",
-      "home_score": 95,
-      "away_score": 116
+      "date": "2026-11-20",
+      "venue": "Höfn",
+      "home": "Sindri",
+      "away": "Njarðvík",
+      "home_score": 107,
+      "away_score": 101
+    },
+    {
+      "date": "2026-11-20",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Tindastóll",
+      "home_score": 92,
+      "away_score": 79
     }
   ],
   "fixtures": [
     {
-      "date": "2026-11-20",
-      "time": "19:00",
-      "venue": "Höfn",
-      "home": "Sindri",
-      "away": "Njarðvík"
-    },
-    {
-      "date": "2026-11-20",
-      "time": "19:15",
-      "venue": "Keflavík",
-      "home": "Keflavík",
-      "away": "Tindastóll"
-    },
-    {
       "date": "2026-12-03",
       "time": "19:15",
       "venue": "Grindavík",
@@ -968,5 +970,5 @@
       "away": "Álftanes"
     }
   ],
-  "updated_at": "2026-11-20T02:21:27+00:00"
+  "updated_at": "2026-11-20T22:36:09+00:00"
 }
