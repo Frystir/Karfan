@@ -288,38 +288,42 @@
       "away": "Sindri",
       "home_score": 84,
       "away_score": 76
+    },
+    {
+      "date": "2026-11-19",
+      "venue": "Álftanes",
+      "home": "Álftanes",
+      "away": "Grindavík",
+      "home_score": 104,
+      "away_score": 97
+    },
+    {
+      "date": "2026-11-19",
+      "venue": "Egilsstaðir",
+      "home": "Höttur",
+      "away": "Valur",
+      "home_score": 94,
+      "away_score": 92
+    },
+    {
+      "date": "2026-11-19",
+      "venue": "Skógarsel",
+      "home": "ÍR",
+      "away": "KR",
+      "home_score": 76,
+      "away_score": 88
+    },
+    {
+      "date": "2026-11-19",
+      "venue": "Laugardalshöll",
+      "home": "Ármann",
+      "away": "Stjarnan",
+      "home_score": 95,
+      "away_score": 116
     }
   ],
   "fixtures": [
     {
-      "date": "2026-11-19",
-      "time": "19:15",
-      "venue": "Egilsstaðir",
-      "home": "Höttur",
-      "away": "Valur"
-    },
-    {
-      "date": "2026-11-19",
-      "time": "19:15",
-      "venue": "Skógarsel",
-      "home": "ÍR",
-      "away": "KR"
-    },
-    {
-      "date": "2026-11-19",
-      "time": "19:15",
-      "venue": "Keflavík",
-      "home": "Keflavík",
-      "away": "Tindastóll"
-    },
-    {
-      "date": "2026-11-19",
-      "time": "19:15",
-      "venue": "Laugardalshöll",
-      "home": "Ármann",
-      "away": "Stjarnan"
-    },
-    {
       "date": "2026-11-20",
       "time": "19:00",
       "venue": "Höfn",
@@ -328,10 +332,10 @@
     },
     {
       "date": "2026-11-20",
-      "time": "19:30",
-      "venue": "Álftanes",
-      "home": "Álftanes",
-      "away": "Grindavík"
+      "time": "19:15",
+      "venue": "Keflavík",
+      "home": "Keflavík",
+      "away": "Tindastóll"
     },
     {
       "date": "2026-12-03",
@@ -964,5 +968,5 @@
       "away": "Álftanes"
     }
   ],
-  "updated_at": "2026-11-19T22:59:45+00:00"
+  "updated_at": "2026-11-20T02:21:27+00:00"
 }
